@@ -1,33 +1,58 @@
-// IEC16022 bar code generation
-// Adrian Kennard, Andrews & Arnold Ltd
-// with help from Cliff Hones on the RS coding
-//
-// $Log: iec16022.c,v $
-// Revision 1.23  2004/09/29 19:21:03  cvs
-// Typo.
-//
-// Revision 1.22  2004/09/29 17:41:31  cvs
-// *** empty log message ***
-//
-// Revision 1.21  2004/09/29 17:38:27  cvs
-// DumbStamp V2.0 new artwork
-//
-// Revision 1.20  2004/09/12 10:35:25  cvs
-// Minor fixes to auto encoding, and more precise placement of text on stamp output.
-//
-// Revision 1.19  2004/09/11 16:16:49  cvs
-// Better centering on stamp barcode
-//
-// Revision 1.18  2004/09/09 12:39:45  cvs
-// *** empty log message ***
-//
-// Revision 1.17  2004/09/09 07:45:09  cvs
-// Added change history to source files
-// Added "info" type to IEC16022
-// Added exact size checking shortcodes on encoding generation for iec16022
-//
-// TBA, structured append, and ECI options.
-// TBA, library for odd size ECC000-140 codes
+/** 
+ *
+ * IEC16022 bar code generation
+ * Adrian Kennard, Andrews & Arnold Ltd
+ * with help from Cliff Hones on the RS coding
+ *
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ *
+ * 
+ * $Log: iec16022.c,v $
+ * Revision 1.23  2004/09/29 19:21:03  cvs
+ * Typo.
+ * 
+ * Revision 1.22  2004/09/29 17:41:31  cvs
+ * *** empty log message ***
+ * 
+ * Revision 1.21  2004/09/29 17:38:27  cvs
+ * DumbStamp V2.0 new artwork
+ * 
+ * Revision 1.20  2004/09/12 10:35:25  cvs
+ * Minor fixes to auto encoding, and more precise placement of text on stamp output.
+ * 
+ * Revision 1.19  2004/09/11 16:16:49  cvs
+ * Better centering on stamp barcode
+ * 
+ * Revision 1.18  2004/09/09 12:39:45  cvs
+ * *** empty log message ***
+ *
+ * Revision 1.17  2004/09/09 07:45:09  cvs
+ * Added change history to source files
+ * Added "info" type to IEC16022
+ * Added exact size checking shortcodes on encoding generation for iec16022
+ * 
+ * TBA, structured append, and ECI options.
+ * TBA, library for odd size ECC000-140 codes
+ *
+ * Stefan Schmidt <stefan@datenfreihafen.org>
+ *   - Add PNG file format to usage.
+ *   - Add GPL header.
+ *   - Layout changes.
+ */ 
+
 
 #include <stdio.h>
 #include <ctype.h>
@@ -126,7 +151,7 @@ main (int argc, const char *argv[])
       {
        "encoding", 'e', POPT_ARG_STRING, &encoding, 0, "Encoding template", "[CTXEAB]* for ecc200 or 11/27/41/37/128/256"},
       {
-       "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING, &format, 0, "Output format", "Text/EPS/Bin/Hex/Stamp"},
+       "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING, &format, 0, "Output format", "Text/EPS/PNG/Bin/Hex/Stamp"},
       POPT_AUTOHELP {
                      NULL, 0, 0, NULL, 0}
    };

@@ -1,26 +1,50 @@
-// IEC16022 bar code generation library
-// Adrian Kennard, Andrews & Arnold Ltd
-// with help from Cliff Hones on the RS coding
-//
-// $Log: iec16022ecc200.c,v $
-// Revision 1.8  2004/09/12 10:35:25  cvs
-// Minor fixes to auto encoding, and more precise placement of text on stamp output.
-//
-// Revision 1.7  2004/09/11 11:16:20  cvs
-// Fixed binary format encoding, and added output file to indicia
-//
-// Revision 1.6  2004/09/10 16:10:30  cvs
-// Correction of declaration ordering
-//
-// Revision 1.5  2004/09/09 12:35:48  cvs
-// Interleaved (large) codes now working as well.
-// Fixed bugs in the auto encoding (was selecting EDIFACT wrongly)
-//
-// Revision 1.4  2004/09/09 07:45:09  cvs
-// Added change history to source files
-// Added "info" type to IEC16022
-// Added exact size checking shortcodes on encoding generation for iec16022
-//
+/** 
+ *
+ * IEC16022 bar code generation
+ * Adrian Kennard, Andrews & Arnold Ltd
+ * with help from Cliff Hones on the RS coding
+ *
+ * 
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+ *
+ * 
+ * $Log: iec16022ecc200.c,v $
+ * Revision 1.8  2004/09/12 10:35:25  cvs
+ * Minor fixes to auto encoding, and more precise placement of text on stamp 
+ * output.
+ *
+ * Revision 1.7  2004/09/11 11:16:20  cvs
+ * Fixed binary format encoding, and added output file to indicia
+ *
+ * Revision 1.6  2004/09/10 16:10:30  cvs
+ * Correction of declaration ordering
+ *
+ * Revision 1.5  2004/09/09 12:35:48  cvs
+ * Interleaved (large) codes now working as well.
+ * Fixed bugs in the auto encoding (was selecting EDIFACT wrongly)
+ *
+ * Revision 1.4  2004/09/09 07:45:09  cvs
+ * Added change history to source files
+ * Added "info" type to IEC16022
+ * Added exact size checking shortcodes on encoding generation for iec16022
+ *
+ * Stefan Schmidt <stefan@datenfreihafen.org>
+ *   - Add GPL header.
+ *   - Layout fixes.
+ *   
+ */
 
 
 #include <stdio.h>
