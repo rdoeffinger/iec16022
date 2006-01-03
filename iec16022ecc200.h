@@ -4,6 +4,8 @@
  * Adrian Kennard, Andrews & Arnold Ltd
  * with help from Cliff Hones on the RS coding
  *
+ * (c) 2004 Adrian Kennard, Andrews & Arnold Ltd
+ * (c) 2006 Stefan Schmidt <stefan@datenfreihafen.org>
  * 
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -20,14 +22,6 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  *
  *
- * IEC16022 encoder, see IEC16022
- * $Log: iec16022ecc200.h,v $
- * Revision 1.3  2004/09/09 07:45:09  cvs
- * Added change history to source files
- * Added "info" type to IEC16022
- * Added exact size checking shortcodes on encoding generation for iec16022
- *
- *
  * Main encoding function
  * Returns the grid (malloced) containing the matrix. L corner at 0,0.
  * Takes suggested size in *Wptr, *Hptr, or 0,0. Fills in actual size.
@@ -39,10 +33,6 @@
  * If maxp not null, then the max storage of this size code is stored
  * If eccp not null, then the number of ecc bytes used in this size is stored
  * Returns 0 on error (writes to stderr with details).
- *
- * Stefan Schmidt <stefan@datenfreihafen.org>
- *   - Add GPL header.
- *   - Layout fixes.
  *
  */
 
