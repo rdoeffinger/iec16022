@@ -1,0 +1,7 @@
+- Set textwidth to 80.
+- Fix compiler warnings.
+- Write README file.
+- Write INSTALL file.
+- Add -h option
+
+- Get ISO standard to verify code.
