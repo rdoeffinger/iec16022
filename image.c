@@ -340,7 +340,7 @@ ImageWriteGif (Image * i, int fh, int back, int trans, char *comment)
    p.fh = fh;
    for (p.colbits = 2, p.cols = 4; p.cols < i->C; p.cols *= 2, p.colbits++);    // count colours, min 4
    {                            // headers
-      unsigned char buf[1500];
+      char buf[1500];
       int n = 0;
       strcpy (buf, "GIF87a");
 #ifndef INTERLACE
@@ -568,7 +568,7 @@ crc (unsigned char *buf, int len)
 }
 
 unsigned int
-writecrc (int fh, unsigned char *ptr, int len, unsigned int c)
+writecrc (int fh, char *ptr, int len, unsigned int c)
 {
    write (fh, ptr, len);
    while (len--)
