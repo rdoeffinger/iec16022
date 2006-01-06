@@ -1,0 +1,3 @@
+Installing iec16022 is really simple. Just do a 'make' and 'make install'.
+In standard configuration the binary will be installed in /usr/local/bin. You
+can change this behavior in the Makefile via DESTDIR.
