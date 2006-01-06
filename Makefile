@@ -2,9 +2,9 @@ CC=/usr/bin/cc
 INSTALL=/usr/bin/install
 GZIP=/bin/gzip
 
-DESTDIR=
+DESTDIR=/usr/local
 
-prefix=$(DESTDIR)/usr/local
+prefix=$(DESTDIR)
 bindir=$(prefix)/bin
 mandir=$(prefix)/share/man
 
