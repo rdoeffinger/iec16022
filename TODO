@@ -2,3 +2,8 @@
 - Fix compiler warnings.
 
 - Get ISO standard to verify code.
+
+Some things to think about:
+---------------------------
+- Use libpng?
+- Merge iec16022 in barcode?
