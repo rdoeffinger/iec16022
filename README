@@ -3,6 +3,11 @@ barcodes are defined in ISO IEC16022.
 
 The code was originally written by Andrews & Arnold Ltd. You can download this
 code from http://aa.gg/free/.
-The current maintainer of the code is Stefan Schmidt <stefan@datenfreihafen.org> 
+The current maintainer of the code is Stefan Schmidt.
 
-Stefan Schmidt <stefan@datenfreihafen.org>, 2006-01-06
+Website:		http://www.datenfreihafen.org/projects/iec16022.html
+Maillinglist:	
+SVN repository:	https://svn.datenfreihafen.org/iec16022/
+
+
+Stefan Schmidt <stefan@datenfreihafen.org>
