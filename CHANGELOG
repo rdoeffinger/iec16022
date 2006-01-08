@@ -1,0 +1,8 @@
+0.1
+	- Initial release.
+	- INSTALL, README, TODO, CREDITS, Makefile, LICENSE and CHANGELOG files
+	  added.
+	- Fix some include issues.
+	- Fix some signed/unsigned issues.
+
+2006-01-08  Stefan Schmidt <stefan@datenfreihafen.org>
