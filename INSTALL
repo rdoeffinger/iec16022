@@ -1,4 +1,10 @@
+Dependency:
+-----------
+
+- libpopt
+- zlib
+
 Installing iec16022 is really simple. Just do a 'make' and 'make install'.
-The only dependency is libpopt to parse the commandline options.
+
 In standard configuration the binary will be installed in /usr/local/bin. You
 can change this behavior in the Makefile via DESTDIR.
