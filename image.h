@@ -18,6 +18,9 @@
  *
  */ 
 
+#ifndef __IMAGE_H
+#define __IMAGE_H
+
 typedef unsigned int Colour;	// RGB value
 
 // Image object
@@ -44,3 +47,5 @@ void ImageText(Image *i,int x,int y,int c,char *text);	// write 8x8 text
 void ImageSmall(Image *i,int x,int y,int c,char *text);	// write 4x6 text
 void ImageRect(Image *i,int x,int y,int w,int h,int c);	// fill a box
 #define ImageWrite ImageWritePNG	// default
+
+#endif /* __IMAGE_H */
