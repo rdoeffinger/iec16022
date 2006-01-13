@@ -35,8 +35,7 @@
 #include "iec16022ecc200.h"
 
  // simple checked response malloc
-void *
-safemalloc (int n)
+void * safemalloc (int n)
 {
    void *p = malloc (n);
    if (!p)
@@ -48,8 +47,7 @@ safemalloc (int n)
 }
 
 // hex dump - bottom left pixel first
-void
-dumphex (unsigned char *grid, int W, int H, unsigned char p)
+void dumphex (unsigned char *grid, int W, int H, unsigned char p)
 {
    int c = 0,
       y;
@@ -88,8 +86,7 @@ dumphex (unsigned char *grid, int W, int H, unsigned char p)
       printf ("\n");
 }
 
-int
-main (int argc, const char *argv[])
+int main (int argc, const char *argv[])
 {
    char c;
    int W = 0,

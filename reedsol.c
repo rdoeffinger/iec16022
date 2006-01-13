@@ -61,8 +61,7 @@ static int *log = NULL,
 // polynomial.  e.g. for ECC200 (8-bit symbols) the polynomial is
 // a**8 + a**5 + a**3 + a**2 + 1, which translates to 0x12d.
 
-void
-rs_init_gf (int poly)
+void rs_init_gf (int poly)
 {
    int m,
      b,
@@ -107,8 +106,7 @@ rs_init_gf (int poly)
 // (x + 2**i)*(x + 2**(i+1))*...   [nsym terms]
 // For ECC200, index is 1.
 
-void
-rs_init_code (int nsym, int index)
+void rs_init_code (int nsym, int index)
 {
    int i,
      k;
@@ -138,8 +136,7 @@ rs_init_code (int nsym, int index)
 // symbol sizes up to 8 bits.  Just change the data type of data and res
 // to unsigned int * for larger symbols.
 
-void
-rs_encode (int len, unsigned char *data, unsigned char *res)
+void rs_encode (int len, unsigned char *data, unsigned char *res)
 {
    int i,
      k,
@@ -165,8 +162,7 @@ rs_encode (int len, unsigned char *data, unsigned char *res)
 
 #ifndef LIB
 // The following tests the routines with the ISO/IEC 16022 Annexe R data
-int
-main (void)
+int main (void)
 {
    register int i;
 

@@ -183,8 +183,7 @@ unsigned char const small[] = {
    0x09, 0x04, 0x12,            //%
 };
 
-Image *
-ImageNew (int w, int h, int c)
+Image * ImageNew (int w, int h, int c)
 {                               // create a new blank image
    Image *i;
    if (!w || !h)
@@ -218,8 +217,7 @@ ImageNew (int w, int h, int c)
    return i;
 }
 
-void
-ImageFree (Image * i)
+void ImageFree (Image * i)
 {                               // free an image
    if (i)
    {
@@ -250,15 +248,13 @@ typedef struct strPrivate
 }
 Private;
 
-static
-LZWFlush (Private * p)
+static LZWFlush (Private * p)
 {                               // flush this block
    write (p->fh, p->block, *p->block + 1);
    *p->block = 0;
 }
 
-static
-LZWOut (Private * p, short v)
+static LZWOut (Private * p, short v)
 {                               // output a value
    p->blockv |= (v << p->blockb);
    p->blockb += p->lzwbits;
@@ -272,8 +268,7 @@ LZWOut (Private * p, short v)
    }
 }
 
-static
-LZWClear (Private * p)
+static LZWClear (Private * p)
 {
    int c;
    p->lzwbits = p->colbits + 1;
@@ -287,8 +282,7 @@ LZWClear (Private * p)
    }
 }
 
-static
-ImageStart (Private * p)
+static ImageStart (Private * p)
 {
    unsigned char b = p->colbits;
    write (p->fh, &b, 1);
@@ -299,8 +293,7 @@ ImageStart (Private * p)
    LZWOut (p, p->cols);         // clear code
 }
 
-static
-ImageEnd (Private * p)
+static ImageEnd (Private * p)
 {
    LZWOut (p, p->lzwcode);      // last prefix
    LZWOut (p, p->cols + 1);     // end code
@@ -309,8 +302,7 @@ ImageEnd (Private * p)
    LZWFlush (p);
 }
 
-static
-ImageOut (Private * p, unsigned char c)
+static ImageOut (Private * p, unsigned char c)
 {
    short next = p->lzw[p->lzwcode][c];
    if (next == -1)
@@ -340,8 +332,7 @@ ImageOut (Private * p, unsigned char c)
 }
 
 // write GIF image
-void
-ImageWriteGif (Image * i, int fh, int back, int trans, char *comment)
+void ImageWriteGif (Image * i, int fh, int back, int trans, char *comment)
 {
    struct strPrivate p;
    p.fh = fh;
@@ -448,8 +439,7 @@ ImageWriteGif (Image * i, int fh, int back, int trans, char *comment)
    write (fh, "\x3B", 1);       // trailer
 }
 
-void
-ImageText (Image * i, int x, int y, int col, char *text)
+void ImageText (Image * i, int x, int y, int col, char *text)
 {                               // writes 8x8 text
    if (i && text)
       while (*text)
@@ -473,8 +463,7 @@ ImageText (Image * i, int x, int y, int col, char *text)
       }
 }
 
-void
-ImageSmall (Image * i, int x, int y, int col, char *text)
+void ImageSmall (Image * i, int x, int y, int col, char *text)
 {                               // writes 4x6 digits
    if (i && text)
       while (*text)
@@ -508,8 +497,7 @@ ImageSmall (Image * i, int x, int y, int col, char *text)
       }
 }
 
-void
-ImageRect (Image * i, int x, int y, int w, int h, int c)
+void ImageRect (Image * i, int x, int y, int w, int h, int c)
 {                               // fill a box
    if (i && w && h)
    {
@@ -530,8 +518,7 @@ ImageRect (Image * i, int x, int y, int w, int h, int c)
 static unsigned int crc_table[256];
 
       /* Make the table for a fast CRC. */
-void
-make_crc_table (void)
+void make_crc_table (void)
 {
    unsigned int c;
    int n,
@@ -555,8 +542,7 @@ make_crc_table (void)
          is the 1's complement of the final running CRC (see the
          crc() routine below)). */
 
-unsigned int
-update_crc (unsigned int crc, unsigned char *buf, int len)
+unsigned int update_crc (unsigned int crc, unsigned char *buf, int len)
 {
    unsigned int c = crc;
    int n;
@@ -568,14 +554,12 @@ update_crc (unsigned int crc, unsigned char *buf, int len)
 }
 
       /* Return the CRC of the bytes buf[0..len-1]. */
-unsigned int
-crc (unsigned char *buf, int len)
+unsigned int crc (unsigned char *buf, int len)
 {
    return update_crc (0xffffffffL, buf, len) ^ 0xffffffffL;
 }
 
-unsigned int
-writecrc (int fh, char *ptr, int len, unsigned int c)
+unsigned int writecrc (int fh, char *ptr, int len, unsigned int c)
 {
    write (fh, ptr, len);
    while (len--)
@@ -583,8 +567,7 @@ writecrc (int fh, char *ptr, int len, unsigned int c)
    return c;
 }
 
-void
-writechunk (int fh, char *typ, void *ptr, int len)
+void writechunk (int fh, char *typ, void *ptr, int len)
 {
    unsigned int v = htonl (len),
       crc;
@@ -597,8 +580,7 @@ writechunk (int fh, char *typ, void *ptr, int len)
 }
 
 #ifndef USEZLIB
-unsigned int
-adlersum (unsigned char *p, int l, unsigned int adler)
+unsigned int adlersum (unsigned char *p, int l, unsigned int adler)
 {
    unsigned int s1 = (adler & 65535),
       s2 = (adler >> 16);
@@ -614,8 +596,7 @@ adlersum (unsigned char *p, int l, unsigned int adler)
 #endif
 
 // write PNG image
-void
-ImageWritePNG (Image * i, int fh, int back, int trans, char *comment)
+void ImageWritePNG (Image * i, int fh, int back, int trans, char *comment)
 {
    make_crc_table ();
    write (fh, "\211PNG\r\n\032\n", 8);  // PNG header

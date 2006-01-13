@@ -80,8 +80,7 @@ ecc200matrix[] =
 };
 
  // simple checked response malloc
-static void *
-safemalloc (int n)
+static void * safemalloc (int n)
 {
    void *p = malloc (n);
    if (!p)
@@ -93,8 +92,8 @@ safemalloc (int n)
 }
 
 // Annex M placement alorithm low level
-static void
-ecc200placementbit (int *array, int NR, int NC, int r, int c, int p, char b)
+static void ecc200placementbit (int *array, int NR, int NC, int r, int c, \
+								int p, char b)
 {
    if (r < 0)
    {
@@ -109,8 +108,8 @@ ecc200placementbit (int *array, int NR, int NC, int r, int c, int p, char b)
    array[r * NC + c] = (p << 3) + b;
 }
 
-static void
-ecc200placementblock (int *array, int NR, int NC, int r, int c, int p)
+static void ecc200placementblock (int *array, int NR, int NC, int r, \
+								int c, int p)
 {
    ecc200placementbit (array, NR, NC, r - 2, c - 2, p, 7);
    ecc200placementbit (array, NR, NC, r - 2, c - 1, p, 6);
@@ -122,8 +121,7 @@ ecc200placementblock (int *array, int NR, int NC, int r, int c, int p)
    ecc200placementbit (array, NR, NC, r - 0, c - 0, p, 0);
 }
 
-static void
-ecc200placementcornerA (int *array, int NR, int NC, int p)
+static void ecc200placementcornerA (int *array, int NR, int NC, int p)
 {
    ecc200placementbit (array, NR, NC, NR - 1, 0, p, 7);
    ecc200placementbit (array, NR, NC, NR - 1, 1, p, 6);
@@ -135,8 +133,7 @@ ecc200placementcornerA (int *array, int NR, int NC, int p)
    ecc200placementbit (array, NR, NC, 3, NC - 1, p, 0);
 }
 
-static void
-ecc200placementcornerB (int *array, int NR, int NC, int p)
+static void ecc200placementcornerB (int *array, int NR, int NC, int p)
 {
    ecc200placementbit (array, NR, NC, NR - 3, 0, p, 7);
    ecc200placementbit (array, NR, NC, NR - 2, 0, p, 6);
@@ -148,8 +145,7 @@ ecc200placementcornerB (int *array, int NR, int NC, int p)
    ecc200placementbit (array, NR, NC, 1, NC - 1, p, 0);
 }
 
-static void
-ecc200placementcornerC (int *array, int NR, int NC, int p)
+static void ecc200placementcornerC (int *array, int NR, int NC, int p)
 {
    ecc200placementbit (array, NR, NC, NR - 3, 0, p, 7);
    ecc200placementbit (array, NR, NC, NR - 2, 0, p, 6);
@@ -161,8 +157,7 @@ ecc200placementcornerC (int *array, int NR, int NC, int p)
    ecc200placementbit (array, NR, NC, 3, NC - 1, p, 0);
 }
 
-static void
-ecc200placementcornerD (int *array, int NR, int NC, int p)
+static void ecc200placementcornerD (int *array, int NR, int NC, int p)
 {
    ecc200placementbit (array, NR, NC, NR - 1, 0, p, 7);
    ecc200placementbit (array, NR, NC, NR - 1, NC - 1, p, 6);
@@ -175,8 +170,7 @@ ecc200placementcornerD (int *array, int NR, int NC, int p)
 }
 
 // Annex M placement alorithm main function
-static void
-ecc200placement (int *array, int NR, int NC)
+static void ecc200placement (int *array, int NR, int NC)
 {
    int r,
      c,
@@ -230,8 +224,8 @@ ecc200placement (int *array, int NR, int NC)
 }
 
 // calculate and append ecc code, and if necessary interleave
-static void
-ecc200 (unsigned char *binary, int bytes, int datablock, int rsblock)
+static void ecc200 (unsigned char *binary, int bytes, int datablock, \
+					int rsblock)
 {
    int blocks = (bytes + 2) / datablock,
       b;
@@ -254,8 +248,8 @@ ecc200 (unsigned char *binary, int bytes, int datablock, int rsblock)
 
 // perform encoding for ecc200, source s len sl, to target t len tl, using optional encoding control string e
 // return 1 if OK, 0 if failed. Does all necessary padding to tl
-char
-ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, char *encoding, int *lenp)
+char ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, \
+					char *encoding, int *lenp)
 {
    char enc = 'a';              // start in ASCII encoding mode
    int tp = 0,
@@ -511,8 +505,7 @@ unsigned char switchcost[E_MAX][E_MAX] = {
 // 2. No unlatch to return to ASCII for last 1 or 2 encoded bytes after EDIFACT
 // 3. Final C40 or text encoding exactly in last 2 bytes can have a shift 0 to pad to make a tripple
 // Only use the encoding from an exact request if the len matches the target, otherwise free the result and try again with exact=0
-static char *
-encmake (int l, unsigned char *s, int *lenp, char exact)
+static char * encmake (int l, unsigned char *s, int *lenp, char exact)
 {
    char *encoding = 0;
    int p = l;
@@ -805,8 +798,9 @@ encmake (int l, unsigned char *s, int *lenp, char exact)
 // If maxp not null, then the max storage of this size code is stored
 // If eccp not null, then the number of ecc bytes used in this size is stored
 // Returns 0 on error (writes to stderr with details).
-unsigned char *
-iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, int barcodelen, unsigned char *barcode, int *lenp, int *maxp, int *eccp)
+unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
+								int barcodelen, unsigned char *barcode, \
+								int *lenp, int *maxp, int *eccp)
 {
    unsigned char binary[3000];  // encoded raw data and ecc to place in barcode
    int W = 0,
