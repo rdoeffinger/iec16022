@@ -1,4 +1,3 @@
-- Set textwidth to 80.
 - Fix compiler warnings.
 - Test on 64bit, powerpc, arm, etc. Anyone?
 - Test stamp feature. Anyone?
