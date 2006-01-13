@@ -278,7 +278,8 @@ static LZWClear (Private * p)
    for (c = 0; c < p->cols; c++)
    {
       p->lzw[p->cols][c] = c;   // links to literal entries
-      memset (&p->lzw[c], -1, p->cols * 2);     // links from literals, dead ends initially
+      // links from literals, dead ends initially
+	  memset (&p->lzw[c], -1, p->cols * 2);
    }
 }
 
@@ -298,7 +299,7 @@ static ImageEnd (Private * p)
    LZWOut (p, p->lzwcode);      // last prefix
    LZWOut (p, p->cols + 1);     // end code
    if (p->blockb)
-      p->block[++*p->block] = p->blockv;        // last partial byte
+      p->block[++*p->block] = p->blockv; // last partial byte
    LZWFlush (p);
 }
 
@@ -336,7 +337,8 @@ void ImageWriteGif (Image * i, int fh, int back, int trans, char *comment)
 {
    struct strPrivate p;
    p.fh = fh;
-   for (p.colbits = 2, p.cols = 4; p.cols < i->C; p.cols *= 2, p.colbits++);    // count colours, min 4
+   // count colours, min 4
+   for (p.colbits = 2, p.cols = 4; p.cols < i->C; p.cols *= 2, p.colbits++);
    {                            // headers
       char buf[1500];
       int n = 0;
@@ -653,9 +655,11 @@ void ImageWritePNG (Image * i, int fh, int back, int trans, char *comment)
       unsigned char alpha[256];
       int n;
       for (n = 0; n < i->C; n++)
-         alpha[n] = 255 - (i->Colour[n] >> 24); // 4th palette byte treated as 0=opaque, 255-transparrent
+		  // 4th palette byte treated as 0=opaque, 255-transparren
+         alpha[n] = 255 - (i->Colour[n] >> 24);
       if (trans >= 0 && trans < i->C)
-         alpha[trans] = 0;      // manual set of specific transparrent colour
+		  // manual set of specific transparrent colour
+         alpha[trans] = 0;
       writechunk (fh, "tRNS", alpha, i->C);
    }
 #ifndef USEZLIB

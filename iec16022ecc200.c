@@ -246,8 +246,12 @@ static void ecc200 (unsigned char *binary, int bytes, int datablock, \
    }
 }
 
-// perform encoding for ecc200, source s len sl, to target t len tl, using optional encoding control string e
-// return 1 if OK, 0 if failed. Does all necessary padding to tl
+/*
+ * perform encoding for ecc200, source s len sl, to target t len tl, using 
+ * optional encoding control string e return 1 if OK, 0 if failed. Does all 
+ * necessary padding to tl
+ */
+
 char ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, \
 					char *encoding, int *lenp)
 {
@@ -263,7 +267,8 @@ char ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, \
    while (sp < sl && tp < tl)
    {
       char newenc = enc;        // suggest new encoding
-      if (tl - tp <= 1 && (enc == 'c' || enc == 't') || tl - tp <= 2 && enc == 'x')
+      if (tl - tp <= 1 && (enc == 'c' || enc == 't') || tl - tp <= 2 && enc \
+					== 'x')
          enc = 'a';             // auto revert to ASCII
       newenc = tolower (encoding[sp]);
       switch (newenc)
@@ -334,7 +339,8 @@ char ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, \
                            out[p++] = (w - s3);
                         } else
                         {
-                           fprintf (stderr, "Could not encode 0x%02X, should not happen\n", c);
+                           fprintf (stderr, "Could not encode 0x%02X, should \
+								   	not happen\n", c);
                            return 0;
                         }
                      }
@@ -469,7 +475,10 @@ char ecc200encode (unsigned char *t, int tl, unsigned char *s, int sl, \
    }
    if (tp > tl || sp < sl)
       return 0;                 // did not fit
-   //for (tp = 0; tp < tl; tp++) fprintf (stderr, "%02X ", t[tp]); fprintf (stderr, "\n");
+   /*
+	* for (tp = 0; tp < tl; tp++) fprintf (stderr, "%02X ", t[tp]); \
+	* fprintf (stderr, "\n");
+	*/
    return 1;                    // OK 
 }
 
@@ -496,15 +505,23 @@ unsigned char switchcost[E_MAX][E_MAX] = {
    0, 1, 1, 1, 1, 0,            // From E_BINARY
 };
 
-// Creates a encoding list (malloc)
-// returns encoding string
-// if lenp not null, target len stored
-// if error, null returned
-// if exact specified, then assumes shortcuts applicable for exact fit in target
-// 1. No unlatch to return to ASCII for last encoded byte after C40 or Text or X12
-// 2. No unlatch to return to ASCII for last 1 or 2 encoded bytes after EDIFACT
-// 3. Final C40 or text encoding exactly in last 2 bytes can have a shift 0 to pad to make a tripple
-// Only use the encoding from an exact request if the len matches the target, otherwise free the result and try again with exact=0
+/*
+ * Creates a encoding list (malloc)
+ * returns encoding string
+ * if lenp not null, target len stored
+ * if error, null returned
+ * if exact specified, then assumes shortcuts applicable for exact fit 
+ * in target
+ * 1. No unlatch to return to ASCII for last encoded byte after C40 or 
+ * Text or X12
+ * 2. No unlatch to return to ASCII for last 1 or 2 encoded bytes after 
+ * EDIFACT
+ * 3. Final C40 or text encoding exactly in last 2 bytes can have a shift 
+ * 0 to pad to make a tripple
+ * Only use the encoding from an exact request if the len matches the target, 
+ * otherwise free the result and try again with exact=0
+ */
+
 static char * encmake (int l, unsigned char *s, int *lenp, char exact)
 {
    char *encoding = 0;
@@ -512,8 +529,12 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
    char e;
    struct
    {
-      short s;                  // number of bytes of source that can be encoded in a row at this point using this encoding mode
-      short t;                  // number of bytes of target generated encoding from this point to end if already in this encoding mode
+      // number of bytes of source that can be encoded in a row at this point
+	  // using this encoding mode
+	  short s;
+      // number of bytes of target generated encoding from this point to end if
+	  // already in this encoding mode
+	  short t;
    } enc[MAXBARCODE][E_MAX];
    memset (&enc, 0, sizeof (enc));
    if (!l)
@@ -538,7 +559,8 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
       bl = 0;
       if (p + sl < l)
          for (e = 0; e < E_MAX; e++)
-            if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + switchcost[E_ASCII][e]) < bl || !bl))
+            if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + \
+							switchcost[E_ASCII][e]) < bl || !bl))
             {
                bl = t;
                b = e;
@@ -567,7 +589,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
          }
       } while (sub && p + sl < l);
       if (exact && sub == 2 && p + sl == l)
-      {                         // special case, can encode last block with shift 0 at end (Is this valid when not end of target buffer?)
+      {                         
+		 // special case, can encode last block with shift 0 at end (Is this 
+		 // valid when not end of target buffer?)
          sub = 0;
          tl += 2;
       }
@@ -576,13 +600,15 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
          bl = 0;
          if (p + sl < l)
             for (e = 0; e < E_MAX; e++)
-               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + switchcost[E_C40][e]) < bl || !bl))
+               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + \
+							   switchcost[E_C40][e]) < bl || !bl))
                {
                   bl = t;
                   b = e;
                }
          if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl)
-         {                      // special case, switch to ASCII for last bytes
+         {                      
+			// special case, switch to ASCII for last bytes
             bl = 1;
             b = E_ASCII;
          }
@@ -611,7 +637,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
          }
       } while (sub && p + sl < l);
       if (exact && sub == 2 && p + sl == l)
-      {                         // special case, can encode last block with shift 0 at end (Is this valid when not end of target buffer?)
+      {                         
+		 // special case, can encode last block with shift 0 at end (Is this 
+		 // valid when not end of target buffer?)
          sub = 0;
          tl += 2;
       }
@@ -620,7 +648,8 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
          bl = 0;
          if (p + sl < l)
             for (e = 0; e < E_MAX; e++)
-               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + switchcost[E_TEXT][e]) < bl || !bl))
+               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + \
+							   switchcost[E_TEXT][e]) < bl || !bl))
                {
                   bl = t;
                   b = e;
@@ -640,7 +669,8 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
       do
       {
          unsigned char c = s[p + sl++];
-         if (c != 13 && c != '*' && c != '>' && c != ' ' && !isdigit (c) && !isupper (c))
+         if (c != 13 && c != '*' && c != '>' && c != ' ' && !isdigit (c) && \
+				 !isupper (c))
          {
             sl = 0;
             break;
@@ -657,13 +687,15 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
          bl = 0;
          if (p + sl < l)
             for (e = 0; e < E_MAX; e++)
-               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + switchcost[E_X12][e]) < bl || !bl))
+               if (enc[p + sl][e].t && ((t = enc[p + sl][e].t + \
+							   switchcost[E_X12][e]) < bl || !bl))
                {
                   bl = t;
                   b = e;
                }
          if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl)
-         {                      // special case, switch to ASCII for last bytes
+         {                      
+			// special case, switch to ASCII for last bytes
             bl = 1;
             b = E_ASCII;
          }
@@ -683,7 +715,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
             bs = 1;
          } else
             for (e = 0; e < E_MAX; e++)
-               if (e != E_EDIFACT && enc[p + 1][e].t && ((t = 2 + enc[p + 1][e].t + switchcost[E_ASCII][e]) < bl || !bl))       // E_ASCII as allowed for unlatch
+               if (e != E_EDIFACT && enc[p + 1][e].t && ((t = 2 + \
+							   enc[p + 1][e].t + switchcost[E_ASCII][e]) \
+						   		< bl || !bl)) // E_ASCII as allowed for unlatch
                {
                   bs = 1;
                   bl = t;
@@ -697,7 +731,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
                bs = 2;
             } else
                for (e = 0; e < E_MAX; e++)
-                  if (e != E_EDIFACT && enc[p + 2][e].t && ((t = 3 + enc[p + 2][e].t + switchcost[E_ASCII][e]) < bl || !bl))    // E_ASCII as allowed for unlatch
+                  if (e != E_EDIFACT && enc[p + 2][e].t && ((t = 3 + \
+								  enc[p + 2][e].t + switchcost[E_ASCII][e]) \
+							  < bl || !bl)) // E_ASCII as allowed for unlatch
                   {
                      bs = 2;
                      bl = t;
@@ -711,7 +747,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
                   bs = 3;
                } else
                   for (e = 0; e < E_MAX; e++)
-                     if (e != E_EDIFACT && enc[p + 3][e].t && ((t = 3 + enc[p + 3][e].t + switchcost[E_ASCII][e]) < bl || !bl)) // E_ASCII as allowed for unlatch
+                     if (e != E_EDIFACT && enc[p + 3][e].t && ((t = 3 + \
+									 enc[p + 3][e].t + switchcost[E_ASCII][e]) \
+								 < bl || !bl)) // E_ASCII as allowed for unlatch
                      {
                         bs = 3;
                         bl = t;
@@ -726,14 +764,18 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
                   } else
                   {
                      for (e = 0; e < E_MAX; e++)
-                        if (enc[p + 4][e].t && ((t = 3 + enc[p + 4][e].t + switchcost[E_EDIFACT][e]) < bl || !bl))
+                        if (enc[p + 4][e].t && ((t = 3 + enc[p + 4][e].t + \
+										switchcost[E_EDIFACT][e]) < bl || !bl))
                         {
                            bs = 4;
                            bl = t;
                            b = e;
                         }
-                     if (exact && enc[p + 4][E_ASCII].t && enc[p + 4][E_ASCII].t <= 2 && (t = 3 + enc[p + 4][E_ASCII].t) < bl)
-                     {          // special case, switch to ASCII for last 1 ot two bytes
+                     if (exact && enc[p + 4][E_ASCII].t && enc[p + \
+							 4][E_ASCII].t <= 2 && (t = 3 + enc[p + \
+								 4][E_ASCII].t) < bl)
+                     {          
+						// special case, switch to ASCII for last 1 ot two bytes
                         bs = 4;
                         bl = t;
                         b = E_ASCII;
@@ -751,7 +793,9 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
       bl = 0;
       for (e = 0; e < E_MAX; e++)
          if (enc[p + 1][e].t
-             && ((t = enc[p + 1][e].t + switchcost[E_BINARY][e] + ((e == E_BINARY && enc[p + 1][e].t == 249) ? 1 : 0)) < bl || !bl))
+             && ((t = enc[p + 1][e].t + switchcost[E_BINARY][e] + ((e == \
+							 E_BINARY && enc[p + 1][e].t == 249) ? 1 : 0)) \
+				 			< bl || !bl))
          {
             bl = t;
             b = e;
@@ -760,7 +804,11 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
       enc[p][E_BINARY].s = 1;
       if (bl && b == E_BINARY)
          enc[p][b].s += enc[p + 1][b].s;
-      //fprintf (stderr, "%d:", p); for (e = 0; e < E_MAX; e++) fprintf (stderr, " %c*%d/%d", encchr[e], enc[p][e].s, enc[p][e].t); fprintf (stderr, "\n");
+      /*
+	   * fprintf (stderr, "%d:", p); for (e = 0; e < E_MAX; e++) fprintf \
+	   * (stderr, " %c*%d/%d", encchr[e], enc[p][e].s, enc[p][e].t); \
+	   * fprintf (stderr, "\n");
+	   */
    }
    encoding = safemalloc (l + 1);
    p = 0;
@@ -772,7 +820,8 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
            m = 0;
          char b = 0;
          for (e = 0; e < E_MAX; e++)
-            if (enc[p][e].t && ((t = enc[p][e].t + switchcost[cur][e]) < m || t == m && e == cur || !m))
+            if (enc[p][e].t && ((t = enc[p][e].t + switchcost[cur][e]) < m || \
+						t == m && e == cur || !m))
             {
                b = e;
                m = t;
@@ -788,16 +837,21 @@ static char * encmake (int l, unsigned char *s, int *lenp, char exact)
    encoding[p] = 0;
    return encoding;
 }
+/*
+ * Main encoding function
+ * Returns the grid (malloced) containing the matrix. L corner at 0,0.
+ * Takes suggested size in *Wptr, *Hptr, or 0,0. Fills in actual size.
+ * Takes barcodelen and barcode to be encoded
+ * Note, if *encodingptr is null, then fills with auto picked (malloced) 
+ * encoding
+ * If lenp not null, then the length of encoded data before any final 
+ * unlatch or pad is stored
+ * If maxp not null, then the max storage of this size code is stored
+ * If eccp not null, then the number of ecc bytes used in this size is 
+ * stored
+ * Returns 0 on error (writes to stderr with details).
+ */
 
-// Main encoding function
-// Returns the grid (malloced) containing the matrix. L corner at 0,0.
-// Takes suggested size in *Wptr, *Hptr, or 0,0. Fills in actual size.
-// Takes barcodelen and barcode to be encoded
-// Note, if *encodingptr is null, then fills with auto picked (malloced) encoding
-// If lenp not null, then the length of encoded data before any final unlatch or pad is stored
-// If maxp not null, then the max storage of this size code is stored
-// If eccp not null, then the number of ecc bytes used in this size is stored
-// Returns 0 on error (writes to stderr with details).
 unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
 								int barcodelen, unsigned char *barcode, \
 								int *lenp, int *maxp, int *eccp)
@@ -819,7 +873,8 @@ unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
    // encoding
    if (W)
    {                            // known size
-      for (matrix = ecc200matrix; matrix->W && (matrix->W != W || matrix->H != H); matrix++);
+      for (matrix = ecc200matrix; matrix->W && (matrix->W != W || \
+				  matrix->H != H); matrix++);
       if (!matrix->W)
       {
          fprintf (stderr, "Invalid size %dx%d\n", W, H);
@@ -846,19 +901,22 @@ unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
       if (encoding)
       {                         // find one that fits chosen encoding
          for (matrix = ecc200matrix; matrix->W; matrix++)
-            if (ecc200encode (binary, matrix->bytes, barcode, barcodelen, encoding, 0))
+            if (ecc200encode (binary, matrix->bytes, barcode, barcodelen, \
+						encoding, 0))
                break;
       } else
       {
          int len;
          char *e;
          e = encmake (barcodelen, barcode, &len, 1);
-         for (matrix = ecc200matrix; matrix->W && matrix->bytes != len; matrix++);
+         for (matrix = ecc200matrix; matrix->W && matrix->bytes != len; \
+				 matrix++);
          if (e && !matrix->W)
          {                      // try for non exact fit
             free (e);
             e = encmake (barcodelen, barcode, &len, 0);
-            for (matrix = ecc200matrix; matrix->W && matrix->bytes < len; matrix++);
+            for (matrix = ecc200matrix; matrix->W && matrix->bytes < len; \
+					matrix++);
          }
          encoding = e;
       }
@@ -870,7 +928,8 @@ unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
       W = matrix->W;
       H = matrix->H;
    }
-   if (!ecc200encode (binary, matrix->bytes, barcode, barcodelen, encoding, lenp))
+   if (!ecc200encode (binary, matrix->bytes, barcode, barcodelen, \
+			   encoding, lenp))
    {
       fprintf (stderr, "Barcode too long for %dx%d\n", W, H);
       return 0;
@@ -910,7 +969,8 @@ unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
             int v = places[(NR - y - 1) * NC + x];
             //fprintf (stderr, "%4d", v);
             if (v == 1 || v > 7 && (binary[(v >> 3) - 1] & (1 << (v & 7))))
-               grid[(1 + y + 2 * (y / (matrix->FH - 2))) * W + 1 + x + 2 * (x / (matrix->FW - 2))] = 1;
+               grid[(1 + y + 2 * (y / (matrix->FH - 2))) * W + 1 + x + 2 * \
+				   (x / (matrix->FW - 2))] = 1;
          }
          //fprintf (stderr, "\n");
       }
