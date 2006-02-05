@@ -8,6 +8,8 @@ mandir=$(prefix)/share/man
 
 CFLAGS=-Wall
 
+.PHONY: test clean
+
 all: iec16022 manpage
 
 iec16022: iec16022ecc200.o image.o iec16022.c
