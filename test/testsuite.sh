@@ -6,10 +6,10 @@
 ../iec16022 -o testsuite-test.bin -f Bin -c "Aolash3l dee6Ieke OhBohm1C MengaR9m zaHaoQu2 huW3Uer8 ieg7chaJ haiKua1o"
 ../iec16022 -o testsuite-test.hex -f Hex -c "Aolash3l dee6Ieke OhBohm1C MengaR9m zaHaoQu2 huW3Uer8 ieg7chaJ haiKua1o"
 
-diff -b testsuite-test.text testsuite-example.text && echo "Text test passed"
-diff -b testsuite-test.eps testsuite-example.eps && echo "EPS test passed"
-diff -b testsuite-test.png testsuite-example.png && echo "PNG test passed"
-diff -b testsuite-test.bin testsuite-example.bin && echo "Bin test passed"
-diff -b testsuite-test.hex testsuite-example.hex && echo "Hex test passed"
+diff -b testsuite-test.text testsuite-example.text && echo "Text test passed" ||exit 1
+diff -b testsuite-test.eps testsuite-example.eps && echo "EPS test passed" || exit 1
+diff -b testsuite-test.png testsuite-example.png && echo "PNG test passed" || exit 1
+diff -b testsuite-test.bin testsuite-example.bin && echo "Bin test passed" || exit 1
+diff -b testsuite-test.hex testsuite-example.hex && echo "Hex test passed" || exit 1
 
 rm testsuite-test.*
