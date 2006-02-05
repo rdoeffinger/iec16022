@@ -2,10 +2,9 @@ CC=/usr/bin/cc
 INSTALL=/usr/bin/install
 GZIP=/bin/gzip
 
-DESTDIR=/usr/local
-
-bindir=$(DESTDIR)/bin
-mandir=$(DESTDIR)/share/man
+prefix=/usr/local
+bindir=$(prefix)/bin
+mandir=$(prefix)/share/man
 
 CFLAGS=-Wall
 
@@ -19,8 +18,9 @@ manpage: iec16022.1
 	$(GZIP) -f --best < iec16022.1 > iec16022.1.gz
 
 install: all
-	$(INSTALL) -m 755 iec16022 $(bindir)
-	$(INSTALL) -m 644 iec16022.1.gz $(mandir)/man1
+	$(INSTALL) -d -m 755 $(DESTDIR)$(bindir) $(DESTDIR)$(mandir)/man1
+	$(INSTALL) -m 755 iec16022 $(DESTDIR)$(bindir)
+	$(INSTALL) -m 644 iec16022.1.gz $(DESTDIR)$(mandir)/man1
 
 iec16022ecc200.o: iec16022ecc200.c iec16022ecc200.h reedsol.o
 	$(CC) -c iec16022ecc200.c
