@@ -23,6 +23,7 @@
  *
  */ 
 
+#define IEC16022_VERSION "0.2"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -123,7 +124,7 @@ int main (int argc, const char *argv[])
       {
        "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING, &format, 0, \
 		   				"Output format", "Text/EPS/PNG/Bin/Hex/Stamp"},
-      POPT_AUTOHELP {
+	  POPT_AUTOHELP {
                      NULL, 0, 0, NULL, 0}
    };
    optCon = poptGetContext (NULL, argc, argv, optionsTable, 0);
@@ -140,7 +141,8 @@ int main (int argc, const char *argv[])
       barcode = (char *) poptGetArg (optCon);
    if (poptPeekArg (optCon) || !barcode && !infile || barcode && infile)
    {
-      poptPrintUsage (optCon, stderr, 0);
+      fprintf (stderr, "Version: %s\n", IEC16022_VERSION);
+	  poptPrintUsage (optCon, stderr, 0);
       return -1;
    }
    if (outfile && !freopen (outfile, "w", stdout))
