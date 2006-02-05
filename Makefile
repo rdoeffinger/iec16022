@@ -22,6 +22,9 @@ install: all
 	$(INSTALL) -m 755 iec16022 $(DESTDIR)$(bindir)
 	$(INSTALL) -m 644 iec16022.1.gz $(DESTDIR)$(mandir)/man1
 
+test: iec16022
+	cd test; ./testsuite.sh
+
 iec16022ecc200.o: iec16022ecc200.c iec16022ecc200.h reedsol.o
 	$(CC) -c iec16022ecc200.c
 
