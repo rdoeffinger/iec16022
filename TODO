@@ -1,8 +1,7 @@
 - Fix compiler warnings.
 - Test on 64bit, powerpc, arm, etc. Anyone?
 - Test stamp feature. Anyone?
-
-- Get ISO standard to verify code.
+- Use autotools
 
 Some things to think about:
 ---------------------------
