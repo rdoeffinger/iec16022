@@ -897,8 +897,12 @@ unsigned char * iec16022ecc200 (int *Wptr, int *Hptr, char **encodingptr, \
          encoding = e;
       }
    } else
-   {                            // find size
-      if (encoding)
+   {                            
+	   // find a suitable encoding
+	   if (encoding == NULL)
+	   		encoding = encmake(barcodelen, barcode, NULL, 1);
+
+	  if (encoding)
       {                         // find one that fits chosen encoding
          for (matrix = ecc200matrix; matrix->W; matrix++)
             if (ecc200encode (binary, matrix->bytes, barcode, barcodelen, \
