@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
  *
- */ 
+ */
 
 #ifndef __REEDSOL_H
 #define __REEDSOL_H
@@ -26,4 +26,4 @@ void rs_init_gf(int poly);
 void rs_init_code(int nsym, int index);
 void rs_encode(int len, unsigned char *data, unsigned char *res);
 
-#endif /* __REEDSOL_H */
+#endif				/* __REEDSOL_H */
