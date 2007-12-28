@@ -1,0 +1,372 @@
+2006-11-11 17:29  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* tag/0.2.1/CHANGELOG: changelog entry
+
+2006-11-11 17:29  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/CHANGELOG: Changelog entry for 0.2.1
+
+2006-11-11 17:23  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* tag/0.2.1: Tag version 0.2.1
+
+2006-11-11 17:02  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/iec16022ecc200.h,
+	  trunk/image.c, trunk/image.h, trunk/reedsol.c, trunk/reedsol.h:
+	  Run the whole sources through Lindent to get better code.
+
+2006-11-11 16:39  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022ecc200.c: Added fix from Alessandro Zummo for
+	  fixing the 'Barcode too long' problem.
+
+2006-10-05 22:25  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* branch/use-autotools: - Branch for testing with autotools.
+
+2006-10-05 22:22  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/TODO: - Update todo list.
+
+2006-10-05 22:17  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/BUGS: - File with known bugs.
+
+	  A trunk/BUGS
+
+2006-02-06 14:25  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* tag/0.2: - Tagged version 0.2
+
+	  A tag/0.2
+
+2006-02-06 14:20  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/CHANGELOG: - Updated CHANGELOG for version 0.2
+
+	  M CHANGELOG
+
+2006-02-06 14:18  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/INSTALL: - Updated INSTALL file.
+
+	  M INSTALL
+
+2006-02-06 14:14  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/CREDITS: - Updated CREDITS file.
+
+	  M CREDITS
+
+2006-02-05 20:43  alphaone
+
+	* trunk/test/testsuite.sh: Changed testsuite.sh so it cleans up if
+	  tests fail
+
+	  M trunk/test/testsuite.sh
+
+2006-02-05 20:33  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Add .PHONY target for test and clean.
+
+	  M Makefile
+
+2006-02-05 20:22  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/test/testsuite.sh: - exit 1, if the test false.
+
+	  M testsuite.sh
+
+2006-02-05 20:07  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Add test target which use testsuite.sh
+
+	  M Makefile
+
+2006-02-05 20:03  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/test, trunk/test/testsuite-example.bin,
+	  trunk/test/testsuite-example.eps,
+	  trunk/test/testsuite-example.hex,
+	  trunk/test/testsuite-example.png,
+	  trunk/test/testsuite-example.text, trunk/test/testsuite.sh: - Add
+	  initial commit for testsuite.
+
+	  A test
+	  AM test/testsuite.sh
+	  AM test/testsuite-example.png
+	  A test/testsuite-example.hex
+	  A test/testsuite-example.text
+	  A test/testsuite-example.eps
+	  A test/testsuite-example.bin
+
+2006-02-05 19:47  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c: - Add verion information before usage.
+
+	  M iec16022.c
+
+2006-02-05 17:16  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Now right use of prefix and DESTDIR. Thanks to
+	  Daniel Willmann
+	  <alphaone@totalueberwachung.de>
+
+	  M Makefile
+
+2006-01-16 21:53  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.1: - Fix typo.
+
+	  M iec16022.1
+
+2006-01-16 21:52  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.1: - Add example to manpage.
+
+	  M iec16022.1
+
+2006-01-14 18:45  jluebbe
+
+	* trunk/iec16022.1: * Update manpage accorting to Branden's
+	  guidelines
+
+2006-01-13 19:30  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/TODO: - Forget TODO file
+
+	  M TODO
+
+2006-01-13 19:29  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/image.c: - Code
+	  should only have 80 character per line.
+
+	  M iec16022.c
+	  M iec16022ecc200.c
+	  M image.c
+
+2006-01-13 18:15  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/iec16022ecc200.h,
+	  trunk/image.c, trunk/reedsol.c: - Layout cahnges. Place retrun
+	  value in front of function name.
+
+	  M iec16022.c
+	  M iec16022ecc200.c
+	  M image.c
+	  M reedsol.c
+	  M iec16022ecc200.h
+
+2006-01-13 15:07  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022ecc200.h, trunk/image.h, trunk/reedsol.h: - Exclude
+	  double include of header files.
+
+	  M iec16022ecc200.h
+	  M image.h
+	  M reedsol.h
+
+2006-01-12 23:39  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - More flexible Makefile. Thanks to Daniel
+	  Willmann <daniel.willmann@tu-bs.de>
+
+	  M trunk/Makefile
+
+2006-01-11 14:59  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/INSTALL, trunk/README, trunk/TODO: - Docu update.
+
+	  M trunk/README
+	  M trunk/TODO
+	  M trunk/INSTALL
+
+2006-01-09 07:50  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/INSTALL: - Add note about libpopt.
+
+	  M trunk/INSTALL
+
+2006-01-08 18:08  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* tag/0.1: - Release version 0.1
+
+	  A tag/0.1
+
+2006-01-08 18:04  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/CHANGELOG: - Add CHANGELOG.
+
+	  A trunk/CHANGELOG
+
+2006-01-08 18:01  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/README: - Add maillinglist to README.
+
+	  M trunk/README
+
+2006-01-08 17:51  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/image.c, trunk/image.h, trunk/reedsol.c, trunk/reedsol.h: -
+	  Add GPL header.
+
+	  M trunk/reedsol.h
+	  M trunk/image.c
+	  M trunk/image.h
+	  M trunk/reedsol.c
+
+2006-01-07 23:56  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/README: - Update README.
+
+	  M trunk/README
+
+2006-01-07 00:15  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/TODO, trunk/image.h: - Add future topics to TODO list.
+	  - Remove two unnecessary comments.
+
+	  M trunk/TODO
+	  M trunk/image.h
+
+2006-01-06 21:33  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/image.c: - Fix some signed/unsigned compiler warnings.
+
+	  M trunk/image.c
+
+2006-01-06 20:57  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c: - Fix include header
+	  files. Thanks to Daniell Willmann.
+
+	  M trunk/iec16022ecc200.c
+	  M trunk/iec16022.c
+
+2006-01-06 20:44  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/README, trunk/TODO: - Add initial README file.
+
+	  M trunk/TODO
+	  A trunk/README
+
+2006-01-06 15:13  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/INSTALL, trunk/TODO: - Add first version of INSTALL file.
+
+	  M trunk/TODO
+	  A trunk/INSTALL
+
+2006-01-06 15:12  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Change Makefile to use DESTDIR.
+
+	  M trunk/Makefile
+
+2006-01-04 15:06  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/TODO: - First version of TODO file.
+
+	  A trunk/TODO
+
+2006-01-03 19:45  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/CREDITS: - Add first version of CREDITS file.
+
+	  A trunk/CREDITS
+
+2006-01-03 19:36  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Add manpage creation and install to Makefile.
+
+	  M trunk/Makefile
+
+2006-01-03 19:09  jluebbe
+
+	* trunk/iec16022.1: Fixes to the manpage
+
+2006-01-03 18:59  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/Makefile: - Add install target to Makefile.
+
+	  M trunk/Makefile
+
+2006-01-03 18:58  jluebbe
+
+	* trunk/iec16022.1: Added manpage
+
+2006-01-03 14:09  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/iec16022ecc200.h:
+	  - Remove changelog entries from source code.
+	  - Add copyright notice.
+
+	  M trunk/iec16022ecc200.c
+	  M trunk/iec16022.c
+	  M trunk/iec16022ecc200.h
+
+2006-01-03 13:35  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/iec16022ecc200.h:
+	  - Add PNG output format in help text.
+	  - Add small GPL header.
+	  - Fix some layout issues.
+
+	  M trunk/iec16022ecc200.c
+	  M trunk/iec16022.c
+	  M trunk/iec16022ecc200.h
+
+2006-01-03 13:29  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/LICENSE, trunk/Makefile: - Add GPL license file.
+	  - Add Makefile.
+
+	  A trunk/LICENSE
+	  A trunk/Makefile
+
+2006-01-03 13:20  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* tag/original-source, tag/original-source/iec16022.c,
+	  tag/original-source/iec16022ecc200.c,
+	  tag/original-source/iec16022ecc200.h,
+	  tag/original-source/image.c, tag/original-source/image.h,
+	  tag/original-source/reedsol.c, tag/original-source/reedsol.h: -
+	  Tag the original source.
+
+	  A tag/original-source
+	  A tag/original-source/image.c
+	  A tag/original-source/reedsol.h
+	  A tag/original-source/image.h
+	  A tag/original-source/iec16022ecc200.c
+	  A tag/original-source/iec16022.c
+	  A tag/original-source/iec16022ecc200.h
+	  A tag/original-source/reedsol.c
+
+2006-01-03 12:24  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* trunk/iec16022.c, trunk/iec16022ecc200.c, trunk/iec16022ecc200.h,
+	  trunk/image.c, trunk/image.h, trunk/reedsol.c, trunk/reedsol.h: -
+	  Initial import.
+	  - This code is available at http://aa.gg/free/
+	  - Thank you to Andrew Hearn, who confirmed that we can use this
+	  code under the
+	  GPL.
+
+	  A trunk/image.c
+	  A trunk/reedsol.h
+	  A trunk/image.h
+	  A trunk/iec16022ecc200.c
+	  A trunk/iec16022.c
+	  A trunk/iec16022ecc200.h
+	  A trunk/reedsol.c
+
+2006-01-03 12:18  Stefan Schmidt <stefan@datenfreihafen.org>
+
+	* branch, tag, trunk: - Directory structure.
+
+	  A trunk
+	  A tag
+	  A branch
+
