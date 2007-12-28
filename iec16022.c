@@ -5,7 +5,7 @@
  * with help from Cliff Hones on the RS coding
  *
  * (c) 2004 Adrian Kennard, Andrews & Arnold Ltd
- * (c) 2006 Stefan Schmidt <stefan@datenfreihafen.org>
+ * (c) 2006-2007 Stefan Schmidt <stefan@datenfreihafen.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
