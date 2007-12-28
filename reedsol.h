@@ -1,4 +1,4 @@
-/** 
+/**
  *
  * This is a simple Reed-Solomon encoder
  * (C) Cliff Hones 2004

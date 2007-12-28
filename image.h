@@ -1,4 +1,4 @@
-/** 
+/**
  *
  * Image handling tools, (c) AJK 2001-2005
  *

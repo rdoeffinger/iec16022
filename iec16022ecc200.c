@@ -1,12 +1,12 @@
-/** 
+/**
  *
  * IEC16022 bar code generation
  * Adrian Kennard, Andrews & Arnold Ltd
  * with help from Cliff Hones on the RS coding
- * 
+ *
  * (c) 2004 Adrian Kennard, Andrews & Arnold Ltd
  * (c) 2006 Stefan Schmidt <stefan@datenfreihafen.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -227,8 +227,8 @@ static void ecc200(unsigned char *binary, int bytes, int datablock, int rsblock)
 }
 
 /*
- * perform encoding for ecc200, source s len sl, to target t len tl, using 
- * optional encoding control string e return 1 if OK, 0 if failed. Does all 
+ * perform encoding for ecc200, source s len sl, to target t len tl, using
+ * optional encoding control string e return 1 if OK, 0 if failed. Does all
  * necessary padding to tl
  */
 
@@ -314,7 +314,7 @@ char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 									fprintf
 									    (stderr,
 									     "Could not encode 0x%02X, should \
-								   	not happen\n", c);
+									not happen\n", c);
 									return
 									    0;
 								}
@@ -450,7 +450,7 @@ char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 	 * for (tp = 0; tp < tl; tp++) fprintf (stderr, "%02X ", t[tp]); \
 	 * fprintf (stderr, "\n");
 	 */
-	return 1;		// OK 
+	return 1;		// OK
 }
 
 // Auto encoding format functions
@@ -480,15 +480,15 @@ unsigned char switchcost[E_MAX][E_MAX] = {
  * returns encoding string
  * if lenp not null, target len stored
  * if error, null returned
- * if exact specified, then assumes shortcuts applicable for exact fit 
+ * if exact specified, then assumes shortcuts applicable for exact fit
  * in target
- * 1. No unlatch to return to ASCII for last encoded byte after C40 or 
+ * 1. No unlatch to return to ASCII for last encoded byte after C40 or
  * Text or X12
- * 2. No unlatch to return to ASCII for last 1 or 2 encoded bytes after 
+ * 2. No unlatch to return to ASCII for last 1 or 2 encoded bytes after
  * EDIFACT
- * 3. Final C40 or text encoding exactly in last 2 bytes can have a shift 
+ * 3. Final C40 or text encoding exactly in last 2 bytes can have a shift
  * 0 to pad to make a tripple
- * Only use the encoding from an exact request if the len matches the target, 
+ * Only use the encoding from an exact request if the len matches the target,
  * otherwise free the result and try again with exact=0
  */
 
@@ -550,7 +550,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 			}
 		} while (sub && p + sl < l);
 		if (exact && sub == 2 && p + sl == l) {
-			// special case, can encode last block with shift 0 at end (Is this 
+			// special case, can encode last block with shift 0 at end (Is this
 			// valid when not end of target buffer?)
 			sub = 0;
 			tl += 2;
@@ -595,7 +595,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 			}
 		} while (sub && p + sl < l);
 		if (exact && sub == 2 && p + sl == l) {
-			// special case, can encode last block with shift 0 at end (Is this 
+			// special case, can encode last block with shift 0 at end (Is this
 			// valid when not end of target buffer?)
 			sub = 0;
 			tl += 2;
@@ -821,12 +821,12 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
  * Returns the grid (malloced) containing the matrix. L corner at 0,0.
  * Takes suggested size in *Wptr, *Hptr, or 0,0. Fills in actual size.
  * Takes barcodelen and barcode to be encoded
- * Note, if *encodingptr is null, then fills with auto picked (malloced) 
+ * Note, if *encodingptr is null, then fills with auto picked (malloced)
  * encoding
- * If lenp not null, then the length of encoded data before any final 
+ * If lenp not null, then the length of encoded data before any final
  * unlatch or pad is stored
  * If maxp not null, then the max storage of this size code is stored
- * If eccp not null, then the number of ecc bytes used in this size is 
+ * If eccp not null, then the number of ecc bytes used in this size is
  * stored
  * Returns 0 on error (writes to stderr with details).
  */

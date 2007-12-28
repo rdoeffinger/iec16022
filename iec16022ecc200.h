@@ -1,4 +1,4 @@
-/** 
+/**
  *
  * IEC16022 bar code generation
  * Adrian Kennard, Andrews & Arnold Ltd
@@ -6,7 +6,7 @@
  *
  * (c) 2004 Adrian Kennard, Andrews & Arnold Ltd
  * (c) 2006 Stefan Schmidt <stefan@datenfreihafen.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -26,9 +26,9 @@
  * Returns the grid (malloced) containing the matrix. L corner at 0,0.
  * Takes suggested size in *Wptr, *Hptr, or 0,0. Fills in actual size.
  * Takes barcodelen and barcode to be encoded
- * Note, if *encodingptr is null, then fills with auto picked (malloced) 
+ * Note, if *encodingptr is null, then fills with auto picked (malloced)
  * encoding.
- * If lenp not null, then the length of encoded data before any final unlatch 
+ * If lenp not null, then the length of encoded data before any final unlatch
  * or pad is stored.
  * If maxp not null, then the max storage of this size code is stored
  * If eccp not null, then the number of ecc bytes used in this size is stored

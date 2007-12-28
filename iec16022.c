@@ -1,4 +1,4 @@
-/** 
+/**
  *
  * IEC16022 bar code generation
  * Adrian Kennard, Andrews & Arnold Ltd
@@ -6,7 +6,7 @@
  *
  * (c) 2004 Adrian Kennard, Andrews & Arnold Ltd
  * (c) 2006 Stefan Schmidt <stefan@datenfreihafen.org>
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
