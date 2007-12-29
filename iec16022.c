@@ -23,8 +23,6 @@
  *
  */
 
-#define IEC16022_VERSION "0.2.1"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
@@ -34,6 +32,7 @@
 #include <malloc.h>
 #include "image.h"
 #include "iec16022ecc200.h"
+#include "config.h"
 
  // simple checked response malloc
 void *safemalloc(int n)
@@ -134,7 +133,7 @@ int main(int argc, const char *argv[])
 	if (poptPeekArg(optCon) && !barcode && !infile)
 		barcode = (char *)poptGetArg(optCon);
 	if (poptPeekArg(optCon) || !barcode && !infile || barcode && infile) {
-		fprintf(stderr, "Version: %s\n", IEC16022_VERSION);
+		fprintf(stderr, "Version: %s\n", PACKAGE_VERSION);
 		poptPrintUsage(optCon, stderr, 0);
 		return -1;
 	}
