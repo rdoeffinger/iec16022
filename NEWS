@@ -1,3 +1,9 @@
+0.2.2
+	- Switch to autotools
+	- Maintenance release
+
+2007-12-29  Stefan Schmidt <stefan@datenfreihafen.org>
+
 0.2.1
 	- Fix 'Barcode too long' bug. Thanks to Alessandro Zummo.
 	- Use Lindent to start cleaning up the code mess.
