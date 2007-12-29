@@ -4,3 +4,6 @@ No barcode produced
 
 We should find a suit barcode and not error here.
 
+Produces wrong barcode for strings with a underscore at >4th position in the
+string. (Not able to reproduce until now)
+
