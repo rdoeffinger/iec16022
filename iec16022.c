@@ -23,7 +23,7 @@
  *
  */
 
-#define IEC16022_VERSION "0.2"
+#define IEC16022_VERSION "0.2.1"
 
 #include <stdio.h>
 #include <stdlib.h>
