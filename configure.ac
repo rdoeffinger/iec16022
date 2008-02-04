@@ -28,4 +28,5 @@ AC_CHECK_LIB([z], [main])
 dnl Output the files
 AC_OUTPUT([
 Makefile
+test/Makefile
 ])
