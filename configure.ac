@@ -1,4 +1,4 @@
-AC_INIT(iec16022, 0.2.2, stefan@datenfreihafen.org)
+AC_INIT(iec16022, 0.2.3, stefan@datenfreihafen.org)
 AM_INIT_AUTOMAKE([subdir-objects])
 AM_MAINTAINER_MODE
 
