@@ -1,2 +1,1 @@
-test:
-	./testsuite.sh
+TESTS=./testsuite.sh
