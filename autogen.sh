@@ -7,3 +7,4 @@ autoheader
 automake --add-missing
 autoconf configure.ac > configure
 chmod +x configure
+./configure
