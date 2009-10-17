@@ -1,4 +1,4 @@
-AC_INIT(iec16022, 0.2.3, stefan@datenfreihafen.org)
+AC_INIT(iec16022, 0.2.4, stefan@datenfreihafen.org)
 AM_INIT_AUTOMAKE([subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_MAINTAINER_MODE

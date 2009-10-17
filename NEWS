@@ -1,3 +1,12 @@
+0.2.4
+	- Install library for use by 3rd party applications (Jim Evins)
+	- Enable AM_SILENT_RULES if available
+	- Make make check work (Hugh Sasse)
+	- Error out if libpopt or zlib is missing (Hugh Sasse)
+	- Maintenance release
+
+2009-10-17  Stefan Schmidt <stefan@datenfreihafen.org>
+
 0.2.3
 	- Add test sub dir to the autotools infrastructure
 	- Add manpage to the autotools infrastructure
