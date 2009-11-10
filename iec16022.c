@@ -30,6 +30,8 @@
 #include <time.h>
 #include <popt.h>
 #include <malloc.h>
+#include <err.h>
+
 #include "image.h"
 #include "iec16022ecc200.h"
 #include "config.h"
@@ -38,10 +40,8 @@
 void *safemalloc(int n)
 {
 	void *p = malloc(n);
-	if (!p) {
-		fprintf(stderr, "Malloc(%d) failed\n", n);
-		exit(1);
-	}
+	if (!p)
+		errx(1, "Malloc(%d) failed", n);
 	return p;
 }
 
@@ -122,38 +122,29 @@ int main(int argc, const char *argv[])
 	};
 	optCon = poptGetContext(NULL, argc, argv, optionsTable, 0);
 	poptSetOtherOptionHelp(optCon, "[barcode]");
-	if ((c = poptGetNextOpt(optCon)) < -1) {
-		/* an error occurred during option processing */
-		fprintf(stderr, "%s: %s\n", poptBadOption(optCon,
-							  POPT_BADOPTION_NOALIAS),
-			poptStrerror(c));
-		return 1;
-	}
+	if ((c = poptGetNextOpt(optCon)) < -1)
+		errx(1, "%s: %s\n",
+		     poptBadOption(optCon, POPT_BADOPTION_NOALIAS),
+		     poptStrerror(c));
 
 	if (poptPeekArg(optCon) && !barcode && !infile)
 		barcode = (char *)poptGetArg(optCon);
 	if (poptPeekArg(optCon) || !barcode && !infile || barcode && infile) {
-		fprintf(stderr, "Version: %s\n", PACKAGE_VERSION);
+		printf("Version: %s\n", PACKAGE_VERSION);
 		poptPrintUsage(optCon, stderr, 0);
 		return -1;
 	}
-	if (outfile && !freopen(outfile, "w", stdout)) {
-		perror(outfile);
-		return 1;
-	}
+	if (outfile && !freopen(outfile, "w", stdout))
+		err(1, outfile);
 
 	if (infile) {		// read from file
 		FILE *f = fopen(infile, "rb");
 		barcode = safemalloc(4001);
-		if (!f) {
-			perror(infile);
-			return 1;
-		}
+		if (!f)
+			err(1, infile);
 		barcodelen = fread(barcode, 1, 4000, f);
-		if (barcodelen < 0) {
-			perror(infile);
-			return 1;
-		}
+		if (barcodelen < 0)
+			err(1, infile);
 		barcode[barcodelen] = 0;	// null terminate anyway
 		close(f);
 	} else
@@ -170,10 +161,8 @@ int main(int argc, const char *argv[])
 	if (eccstr)
 		ecc = atoi(eccstr);
 	if (W & 1) {		// odd size
-		if (W != H || W < 9 || W > 49) {
-			fprintf(stderr, "Invalid size %dx%d\n", W, H);
-			return 1;
-		}
+		if (W != H || W < 9 || W > 49)
+			errx(1, "Invalid size %dx%d\n", W, H);
 		if (!eccstr) {
 			if (W >= 17)
 				ecc = 140;
@@ -184,13 +173,10 @@ int main(int argc, const char *argv[])
 			else
 				ecc = 0;
 		}
-		if (ecc && ecc != 50 && ecc != 80 && ecc != 100 && ecc != 140 ||
-		    ecc == 50 && W < 11 || ecc == 80 && W < 13 || ecc == 100
-		    && W < 13 || ecc == 140 && W < 17) {
-			fprintf(stderr, "ECC%03d invalid for %dx%d\n", ecc, W,
-				H);
-			return 1;
-		}
+		if (ecc && ecc != 50 && ecc != 80 && ecc != 100 && ecc != 140
+		    || ecc == 50 && W < 11 || ecc == 80 && W < 13 || ecc == 100
+		    && W < 13 || ecc == 140 && W < 17)
+			errx(1, "ECC%03d invalid for %dx%d\n", ecc, W, H);
 
 	} else if (W) {		// even size
 		if (W < H) {
@@ -200,27 +186,22 @@ int main(int argc, const char *argv[])
 		}
 		if (!eccstr)
 			ecc = 200;
-		if (ecc != 200) {
-			fprintf(stderr, "ECC%03d invalid for %dx%d\n", ecc, W,
-				H);
-			return 1;
-		}
+		if (ecc != 200)
+			errx(1, "ECC%03d invalid for %dx%d\n", ecc, W, H);
 	}
 
 	else {			// auto size
 		if (!eccstr)
-			// default is even sizes only unless explicit ecc set to force odd
-			// sizes
-			ecc = 200;
+			ecc = 200;	// default is even sizes only unless explicit ecc set to force odd sizes
 	}
 
 	if (tolower(*format) == 's') {	// special stamp format checks & defaults
 		if (!W)
 			W = H = 32;
 		if (ecc != 200 || W != 32 || H != 32)
-			fprintf(stderr, "Stamps must be 32x32\n");
+			errx(1, "Stamps must be 32x32\n");
 		if (encoding)
-			fprintf(stderr, "Stamps should use auto encoding\n");
+			errx(1, "Stamps should use auto encoding\n");
 		else {
 			int n;
 			for (n = 0; n < barcodelen && (barcode[n] == ' ' ||
@@ -228,8 +209,7 @@ int main(int argc, const char *argv[])
 						       || isupper(barcode[n]));
 			     n++) ;
 			if (n < barcodelen)
-				fprintf(stderr,
-					"Has invalid characters for a stamp\n");
+				errx(1, "Has invalid characters for a stamp\n");
 			else {
 				// Generate simplistic encoding rules as used by the windows app
 				// TBA - does not always match the windows app...
@@ -267,24 +247,21 @@ int main(int argc, const char *argv[])
 					}
 				}
 				encoding[n] = 0;
-				//fprintf (stderr, "%s\n%s\n", barcode, encoding);
 			}
 		}
 	}
 	// processing stamps
-	if ((W & 1) || ecc < 200) {	// odd sizes
-		fprintf(stderr, "Not done odd sizes yet, sorry\n");
-	} else {		// even sizes
+	if ((W & 1) || ecc < 200)	// odd sizes
+		errx(1, "Not done odd sizes yet, sorry\n");
+	else {		// even sizes
 		grid =
 		    iec16022ecc200(&W, &H, &encoding, barcodelen, barcode, &len,
 				   &maxlen, &ecclen);
 	}
 
 	// output
-	if (!grid || !W) {
-		fprintf(stderr, "No barcode produced\n");
-		return 1;
-	}
+	if (!grid || !W)
+		errx(1, "No barcode produced\n");
 	switch (tolower(*format)) {
 	case 'i':		// info
 		printf("Size    : %dx%d\n", W, H);
@@ -349,11 +326,8 @@ int main(int argc, const char *argv[])
 				0
 			};
 			int v;
-			if (barcodelen < 74) {
-				fprintf(stderr,
-					"Does not look like a stamp barcode\n");
-				return 1;
-			}
+			if (barcodelen < 74)
+				errx(1, "Does not look like a stamp barcode\n");
 			memcpy(temp, barcode, 74);
 			c = temp[5];
 			temp[56] = 0;
@@ -454,7 +428,7 @@ int main(int argc, const char *argv[])
 		}
 		break;
 	default:
-		fprintf(stderr, "Unknown output format %s\n", format);
+		errx(1, "Unknown output format %s\n", format);
 		break;
 	}
 	return 0;
