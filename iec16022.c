@@ -24,14 +24,14 @@
  */
 
 #include <stdio.h>
-#include <stdlib.h>
+#include <stdint.h>
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
 #include <popt.h>
 #include <malloc.h>
+#include <unistd.h>
 #include <err.h>
-
 #include "image.h"
 #include "iec16022ecc200.h"
 #include "config.h"
@@ -46,13 +46,13 @@ void *safemalloc(int n)
 }
 
 // hex dump - bottom left pixel first
-void dumphex(unsigned char *grid, int W, int H, unsigned char p)
+void dumphex(unsigned char *grid, int W, int H, unsigned char p, int S)
 {
 	int c = 0, y;
-	for (y = 0; y < H; y++) {
+	for (y = 0; y < H * S; y++) {
 		int v = 0, x, b = 128;
-		for (x = 0; x < W; x++) {
-			if (grid[y * W + x])
+		for (x = 0; x < W * S; x++) {
+			if (grid[(y / S) * W + (x / S)])
 				v |= b;
 			b >>= 1;
 			if (!b) {
@@ -68,7 +68,7 @@ void dumphex(unsigned char *grid, int W, int H, unsigned char p)
 		}
 		printf(" ");
 		c++;
-		if (c >= 80) {
+		if (c >= 40) {
 			printf("\n");
 			c = 0;
 		}
@@ -80,22 +80,22 @@ void dumphex(unsigned char *grid, int W, int H, unsigned char p)
 int main(int argc, const char *argv[])
 {
 	char c;
-	int W = 0, H = 0;
+	int W = 0, H = 0, S = 1;
 	int ecc = 0;
 	int barcodelen = 0;
 	char *encoding = 0;
 	char *outfile = 0;
 	char *infile = 0;
 	char *barcode = 0;
-	char *format = "Text";
+	char *format = "t";
 	char *size = 0;
 	char *eccstr = 0;
-	int len = 0, maxlen = 0, ecclen = 0;
+	int len = 0, maxlen = 0, ecclen = 0, square = 1;
 	unsigned char *grid = 0;
 	poptContext optCon;	// context for parsing command-line options
 	const struct poptOption optionsTable[] = {
-		{
-		 "size", 's', POPT_ARG_STRING, &size, 0, "Size", "WxH"},
+		{"size", 's', POPT_ARG_STRING, &size, 0, "Size", "WxH"},
+		{"square", 'q', POPT_ARG_NONE, &square, 0, "Square", 0},
 		{
 		 "barcode", 'c', POPT_ARG_STRING, &barcode, 0, "Barcode",
 		 "text"},
@@ -107,16 +107,15 @@ int main(int argc, const char *argv[])
 		 "filename"},
 		{
 		 "outfile", 'o', POPT_ARG_STRING, &outfile, 0,
-		 "Output filename",
-		 "filename"},
+		 "Output filename", "filename"},
 		{
 		 "encoding", 'e', POPT_ARG_STRING, &encoding, 0,
 		 "Encoding template",
 		 "[CTXEAB]* for ecc200 or 11/27/41/37/128/256"},
 		{
 		 "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING,
-		 &format, 0,
-		 "Output format", "Text/EPS/PNG/Bin/Hex/Stamp"},
+		 &format, 0, "Output format",
+		 "i=info/t[s]=text/e[s]=EPS/b=bin/h[s]=hex/p[s]=PNG/s=stamp/g[s]=ps"},
 		POPT_AUTOHELP {
 			       NULL, 0, 0, NULL, 0}
 	};
@@ -137,6 +136,11 @@ int main(int argc, const char *argv[])
 	if (outfile && !freopen(outfile, "w", stdout))
 		err(1, outfile);
 
+	if (*format)
+		S = atoi(format + 1);	// scale
+	if (S <= 0)
+		S = 1;
+
 	if (infile) {		// read from file
 		FILE *f = fopen(infile, "rb");
 		barcode = safemalloc(4001);
@@ -146,9 +150,11 @@ int main(int argc, const char *argv[])
 		if (barcodelen < 0)
 			err(1, infile);
 		barcode[barcodelen] = 0;	// null terminate anyway
-		close(f);
+		fclose(f);
 	} else
 		barcodelen = strlen(barcode);
+	if (!barcodelen)
+		errx(1, "Empty barcode");
 	// check parameters
 	if (size) {
 		char *x = strchr(size, 'x');
@@ -204,14 +210,13 @@ int main(int argc, const char *argv[])
 			errx(1, "Stamps should use auto encoding\n");
 		else {
 			int n;
-			for (n = 0; n < barcodelen && (barcode[n] == ' ' ||
-						       isdigit(barcode[n])
-						       || isupper(barcode[n]));
-			     n++) ;
+			for (n = 0;
+			     n < barcodelen && (barcode[n] == ' '
+						|| isdigit(barcode[n])
+						|| isupper(barcode[n])); n++) ;
 			if (n < barcodelen)
 				errx(1, "Has invalid characters for a stamp\n");
-			else {
-				// Generate simplistic encoding rules as used by the windows app
+			else {	// Generate simplistic encoding rules as used by the windows app
 				// TBA - does not always match the windows app...
 				n = 0;
 				encoding = safemalloc(barcodelen + 1);
@@ -251,16 +256,22 @@ int main(int argc, const char *argv[])
 		}
 	}
 	// processing stamps
-	if ((W & 1) || ecc < 200)	// odd sizes
+	if ((W & 1) || ecc < 200)
 		errx(1, "Not done odd sizes yet, sorry\n");
-	else {		// even sizes
-		grid =
-		    iec16022ecc200(&W, &H, &encoding, barcodelen, barcode, &len,
-				   &maxlen, &ecclen);
+	else {			// even sizes
+		if (square) {
+			grid =
+			    iec16022ecc200(&W, &W, &encoding, barcodelen,
+					   barcode, &len, &maxlen, &ecclen);
+			H = W;
+		} else
+			grid =
+			    iec16022ecc200(&W, &H, &encoding, barcodelen,
+					   barcode, &len, &maxlen, &ecclen);
 	}
 
 	// output
-	if (!grid || !W)
+	if (tolower(*format) != 'i' && (!grid || !W))
 		errx(1, "No barcode produced\n");
 	switch (tolower(*format)) {
 	case 'i':		// info
@@ -268,18 +279,18 @@ int main(int argc, const char *argv[])
 		printf("Encoded : %d of %d bytes with %d bytes of ecc\n", len,
 		       maxlen, ecclen);
 		printf("Barcode : %s\n", barcode);
-		printf("Encoding: %s\n", encoding);
+		printf("Encoding: %s\n", encoding ? : "");
 		break;
 	case 'h':		// hex
-		dumphex(grid, W, H, 0);
+		dumphex(grid, W, H, 0, S);
 		break;
 	case 'b':		// bin
 		{
 			int y;
-			for (y = 0; y < H; y++) {
+			for (y = 0; y < H * S; y++) {
 				int v = 0, x, b = 128;
-				for (x = 0; x < W; x++) {
-					if (grid[y * W + x])
+				for (x = 0; x < W * S; x++) {
+					if (grid[(y / S) * W + (x / S)])
 						v |= b;
 					b >>= 1;
 					if (!b) {
@@ -296,11 +307,12 @@ int main(int argc, const char *argv[])
 	case 't':		// text
 		{
 			int y;
-			for (y = H - 1; y >= 0; y--) {
+			for (y = (H * S) - 1; y >= 0; y--) {
 				int x;
-				for (x = 0; x < W; x++)
+				for (x = 0; x < (W * S); x++)
 					printf("%c",
-					       grid[W * y + x] ? '*' : ' ');
+					       grid[W * (y / S) +
+						    (x / S)] ? '*' : ' ');
 				printf("\n");
 			}
 		}
@@ -312,10 +324,11 @@ int main(int argc, const char *argv[])
 		       "%%%%BarcodeFormat: ECC200\n"
 		       "%%%%DocumentData: Clean7Bit\n" "%%%%LanguageLevel: 1\n"
 		       "%%%%Pages: 1\n" "%%%%BoundingBox: 0 0 %d %d\n"
-		       "%%%%EndComments\n" "%%%%Page: 1 1\n"
-		       "%d %d 1[1 0 0 1 -1 -1]{<\n", barcode, W, H, W + 2,
-		       H + 2, W, H);
-		dumphex(grid, W, H, 0xFF);
+		       "%%%%EndComments\n" "%%%%Page: 1 1\n", barcode, W * S,
+		       H * S, (W + 2) * S, (H + 2) * S);
+	case 'g':		// PS
+		printf("%d %d 1[1 0 0 1 -%d -%d]{<\n", W * S, H * S, S, S);
+		dumphex(grid, W, H, 0xFF, S);
 		printf(">}image\n");
 		break;
 	case 's':		// Stamp
@@ -341,13 +354,17 @@ int main(int argc, const char *argv[])
 			v = atoi(temp + 36);
 			printf("%%!PS-Adobe-3.0 EPSF-3.0\n"
 			       "%%%%Creator: IEC16022 barcode/stamp generator\n"
-			       "%%%%BarcodeData: %s\n" "%%%%BarcodeSize: %dx%d\n" "%%%%DocumentData: Clean7Bit\n" "%%%%LanguageLevel: 1\n" "%%%%Pages: 1\n" "%%%%BoundingBox: 0 0 190 80\n" "%%%%EndComments\n" "%%%%Page: 1 1\n" "10 dict begin/f{findfont exch scalefont \
-				 setfont}bind def/rm/rmoveto load def/m/moveto load \
-				 def/rl/rlineto load def\n" "/l/lineto load def/cp/closepath load def/c{dup stringwidth \
-				 pop -2 div 0 rmoveto show}bind def\n" "gsave 72 25.4 div dup scale 0 0 m 67 0 rl 0 28 rl -67 0 rl \
-				 cp clip 1 setgray fill 0 setgray 0.5 0 translate 0.3 \
-				 setlinewidth\n" "32 32 1[2 0 0 2 0 -11]{<\n", barcode, W, H);
-			dumphex(grid, W, H, 0xFF);
+			       "%%%%BarcodeData: %s\n"
+			       "%%%%BarcodeSize: %dx%d\n"
+			       "%%%%DocumentData: Clean7Bit\n"
+			       "%%%%LanguageLevel: 1\n" "%%%%Pages: 1\n"
+			       "%%%%BoundingBox: 0 0 190 80\n"
+			       "%%%%EndComments\n" "%%%%Page: 1 1\n"
+			       "10 dict begin/f{findfont exch scalefont setfont}bind def/rm/rmoveto load def/m/moveto load def/rl/rlineto load def\n"
+			       "/l/lineto load def/cp/closepath load def/c{dup stringwidth pop -2 div 0 rmoveto show}bind def\n"
+			       "gsave 72 25.4 div dup scale 0 0 m 67 0 rl 0 28 rl -67 0 rl cp clip 1 setgray fill 0 setgray 0.5 0 translate 0.3 setlinewidth\n"
+			       "32 32 1[2 0 0 2 0 -11]{<\n", barcode, W, H);
+			dumphex(grid, W, H, 0xFF, 1);
 			printf(">}image\n"
 			       "3.25/Helvetica-Bold f 8 25.3 m(\\243%d.%02d)c\n"
 			       "2.6/Helvetica f 8 22.3 m(%.4s %.4s)c\n"
@@ -358,71 +375,66 @@ int main(int argc, const char *argv[])
 			if (c == '1' || c == '2' || c == 'A' || c == 'S') {
 				if (c == '2')
 					printf
-					    ("42 0 m 10 0 rl 0 28 rl -10 0 rl cp 57 0 m 5 0 rl 0 \
-					   28 rl -5 0 rl cp");
+					    ("42 0 m 10 0 rl 0 28 rl -10 0 rl cp 57 0 m 5 0 rl 0 28 rl -5 0 rl cp");
 				else
 					printf
-					    ("42 0 m 5 0 rl 0 28 rl -5 0 rl cp 52 0 m 10 0 rl 0 \
-					   28 rl -10 0 rl cp");
+					    ("42 0 m 5 0 rl 0 28 rl -5 0 rl cp 52 0 m 10 0 rl 0 28 rl -10 0 rl cp");
 				printf
 				    (" 21 0 m 16 0 rl 0 28 rl -16 0 rl cp fill\n"
-				     "21.3 0.3 m 15.4 0 rl 0 13 rl -15.4 0 rl cp 1 setgray \
-					fill gsave 21.3 0.3 15.4 27.4 rectclip newpath\n");
+				     "21.3 0.3 m 15.4 0 rl 0 13 rl -15.4 0 rl cp 1 setgray fill gsave 21.3 0.3 15.4 27.4 rectclip newpath\n");
 				switch (c) {
 				case '1':
 					printf
-					    ("27/Helvetica-Bold f 27 8.7 m(1)show grestore 0 setgray \
-				   1.5/Helvetica-Bold f 22 3.3 m(POSTAGE PAID GB)show \
-				   1.7/Helvetica f 29 1.5 m(DumbStamp.co.uk)c\n");
+					    ("27/Helvetica-Bold f 27 8.7 m(1)show grestore 0 setgray 1.5/Helvetica-Bold f 22 3.3 m(POSTAGE PAID GB)show 1.7/Helvetica f 29 1.5 m(SmartStamp.co.uk)c\n");
 					break;
 				case '2':
 					printf
-					    ("21/Helvetica-Bold f 23.5 13 m(2)1.25 1 scale show grestore \
-				   0 setgray 1.5/Helvetica-Bold f 22 3.3 \
-				   m(POSTAGE PAID GB)show 1.7/Helvetica f 29 1.5 \
-				   m(DumbStamp.co.uk)c\n");
+					    ("21/Helvetica-Bold f 23.5 13 m(2)1.25 1 scale show grestore 0 setgray 1.5/Helvetica-Bold f 22 3.3 m(POSTAGE PAID GB)show 1.7/Helvetica f 29 1.5 m(SmartStamp.co.uk)c\n");
 					break;
 				case 'A':
 					printf
-					    ("16/Helvetica-Bold f 29 14.75 m 1.1 1 scale(A)c grestore 0 \
-				   setgray 1.5/Helvetica-Bold f 22 3.3 m(POSTAGE PAID GB)show \
-				   1.7/Helvetica f 22 1.5 m(Par Avion)show\n");
+					    ("16/Helvetica-Bold f 29 14.75 m 1.1 1 scale(A)c grestore 0 setgray 1.5/Helvetica-Bold f 22 3.3 m(POSTAGE PAID GB)show 1.7/Helvetica f 22 1.5 m(Par Avion)show\n");
 					break;
 				case 'S':
 					printf
-					    ("10/Helvetica-Bold f 29 17 m(SU)c grestore 0 setgray \
-					   1.5/Helvetica-Bold f 22 1.5 m(POSTAGE PAID GB)show\n");
+					    ("10/Helvetica-Bold f 29 17 m(SU)c grestore 0 setgray 1.5/Helvetica-Bold f 22 1.5 m(POSTAGE PAID GB)show\n");
 					break;
 				}
 				printf
-				    ("2.3/Helvetica-Bold f 29 10 m(LOYAL MAIL)c\n");
+				    ("2.3/Helvetica-Bold f 29 10 m(ROYAL MAIL)c\n");
 			} else if (c == 'P') {	// Standard Parcels
-				printf("21 0 m 41 0 rl 0 28 rl -41 0 rl cp fill\n" "37.7 0.3 m 24 0 rl 0 27.4 rl -24 0 rl cp 1 setgray fill \
-					gsave 21.3 0.3 16.4 27.4 rectclip newpath\n" "22.5/Helvetica-Bold f 37.75 -1.25 m 90 rotate(SP)show \
-					grestore 0 setgray\n"
-				       "3.5/Helvetica-Bold f 49.7 21.5 m(LOYAL MAIL)c\n" "2.3/Helvetica-Bold f 49.7 7 m(POSTAGE PAID GB)c\n" "2.6/Helveica f 49.7 4.25 m(DumbStamp.co.uk)c\n");
-			} else if (c == '3')
+				printf
+				    ("21 0 m 41 0 rl 0 28 rl -41 0 rl cp fill\n"
+				     "37.7 0.3 m 24 0 rl 0 27.4 rl -24 0 rl cp 1 setgray fill gsave 21.3 0.3 16.4 27.4 rectclip newpath\n"
+				     "22.5/Helvetica-Bold f 37.75 -1.25 m 90 rotate(SP)show grestore 0 setgray\n"
+				     "3.5/Helvetica-Bold f 49.7 21.5 m(ROYAL MAIL)c\n"
+				     "2.3/Helvetica-Bold f 49.7 7 m(POSTAGE PAID GB)c\n"
+				     "2.6/Helveica f 49.7 4.25 m(SmartStamp.co.uk)c\n");
+			} else if (c == '3' || c == '9')
 				printf("21.15 0.15 40.7 27.7 rectstroke\n"
 				       "21 0 m 41 0 rl 0 5 rl -41 0 rl cp fill\n"
-				       "0 1 2{0 1 18{dup 1.525 mul 22.9 add 24 3 index 1.525 mul \
-					add 3 -1 roll 9 add 29 div 0 360 arc fill}for pop}for\n" "50.5 23.07 m 11.5 0 rl 0 5 rl -11.5 0 rl cp fill\n"
-				       "5.85/Helvetica f 23.7 15.6 m(Loyal Mail)show\n" "4.75/Helvetica-Bold f 24 11 m(special)show 4.9/Helvetica \
-					f(delivery)show\n" "gsave 1 setgray 3.2/Helvetica-Bold f 24 1.6 \
-					m(next day)show 26 10.15 m 2 0 rl stroke grestore\n" "21.15 9.9 m 53.8 9.9 l stroke 53.8 9.9 0.4 0 360 \
-					arc fill\n");
+				       "0 1 2{0 1 18{dup 1.525 mul 22.9 add 24 3 index 1.525 mul add 3 -1 roll 9 add 29 div 0 360 arc fill}for pop}for\n"
+				       "50.5 23.07 m 11.5 0 rl 0 5 rl -11.5 0 rl cp fill\n"
+				       "5.85/Helvetica f 23.7 15.6 m(Royal Mail)show\n"
+				       "4.75/Helvetica-Bold f 24 11 m(special)show 4.9/Helvetica f(delivery)show\n"
+				       "gsave 1 setgray 3.2/Helvetica-Bold f 24 1.6 m(%s)show 26 10.15 m 2 0 rl stroke grestore\n"
+				       "21.15 9.9 m 53.8 9.9 l stroke 53.8 9.9 0.4 0 360 arc fill\n",
+				       c == '3' ? "next day" : "9.00am");
 			printf("end grestore\n");
 		}
 		break;
 	case 'p':		// png
 		{
 			int x, y;
-			Image *i = ImageNew(W + 2, H + 2, 2);
+			Image *i = ImageNew((W + 2) * S, (H + 2) * S, 2);
 			i->Colour[0] = 0xFFFFFF;
 			i->Colour[1] = 0;
-			for (y = 0; y < H; y++)
-				for (x = 0; x < W; x++)
-					if (grid[y * W + x])
-						ImagePixel(i, x + 1, H - y) = 1;
+			for (y = 0; y < H * S; y++)
+				for (x = 0; x < W * S; x++)
+					if (grid[(y / S) * W + (x / S)])
+						ImagePixel(i, x + S,
+							   ((H + 1) * S) - y -
+							   1) = 1;
 			ImageWritePNG(i, fileno(stdout), 0, -1, barcode);
 			ImageFree(i);
 		}
