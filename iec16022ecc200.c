@@ -28,7 +28,6 @@
 #include <ctype.h>
 #include <string.h>
 #include <time.h>
-#include <popt.h>
 #include <malloc.h>
 #include "reedsol.h"
 #include "iec16022ecc200.h"
