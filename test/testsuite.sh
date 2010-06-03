@@ -1,6 +1,7 @@
 #!/bin/bash
 
 FAILED=0
+export LD_LIBRARY_PATH="../.libs:$LD_LIBRARY_PATH"
 
 ../iec16022 -o testsuite-test.text -f Text -c "Aolash3l dee6Ieke OhBohm1C MengaR9m zaHaoQu2 huW3Uer8 ieg7chaJ haiKua1o"
 ../iec16022 -o testsuite-test.eps -f EPS -c "Aolash3l dee6Ieke OhBohm1C MengaR9m zaHaoQu2 huW3Uer8 ieg7chaJ haiKua1o"
