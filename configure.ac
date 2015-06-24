@@ -48,7 +48,7 @@ dnl Checks for typedefs, structures, and compiler characteristics.
 dnl
 AC_HEADER_TIME
 
-AC_CHECK_LIB([popt], [main],,AC_MSG_ERROR([Missing library: popt not found.]))
+AC_CHECK_LIB([popt], [main], [ ],AC_MSG_ERROR([Missing library: popt not found.]))
 AC_CHECK_LIB([z], [main],,AC_MSG_ERROR([Missing library: zlib not found.]))
 
 dnl Output the files

@@ -21,7 +21,8 @@ iec16022_SOURCES =	\
 	iec16022.c
 
 iec16022_LDADD =	\
-	libiec16022.la
+	libiec16022.la  \
+	-lpopt
 
 libiec16022_la_SOURCES =	\
 	iec16022ecc200.c	\
