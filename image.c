@@ -528,12 +528,6 @@ static unsigned int update_crc(unsigned int crc, unsigned char *buf, int len)
 	return c;
 }
 
-      /* Return the CRC of the bytes buf[0..len-1]. */
-static unsigned int crc(unsigned char *buf, int len)
-{
-	return update_crc(0xffffffffL, buf, len) ^ 0xffffffffL;
-}
-
 static unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
 {
 	write(fh, ptr, len);
