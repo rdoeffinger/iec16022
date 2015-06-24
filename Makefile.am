@@ -1,3 +1,5 @@
+AM_CFLAGS = -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arith -Wredundant-decls -Werror=format-security -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -Werror-implicit-function-declaration -std=c99 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE
+
 SUBDIRS = test
 
 lib_LTLIBRARIES = libiec16022.la
