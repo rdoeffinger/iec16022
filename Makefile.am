@@ -44,3 +44,6 @@ EXTRA_DIST = 				\
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= libiec16022.pc
+
+%.signed.exe: %.exe
+	osslsigncode sign -ts http://www.startssl.com/timestamp -certs $(SIGNKEY).crt -key $(SIGNKEY).key -in $^ -out $@
