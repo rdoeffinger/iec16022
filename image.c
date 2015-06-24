@@ -22,6 +22,7 @@
 #include <malloc.h>
 #include <string.h>
 #include <ctype.h>
+#include <arpa/inet.h>
 #include "image.h"
 
 #define	INTERLACE
@@ -241,13 +242,13 @@ typedef struct strPrivate {
 	short lzwcode;		// which code we are on now
 } Private;
 
-static LZWFlush(Private * p)
+static void LZWFlush(Private * p)
 {				// flush this block
 	write(p->fh, p->block, *p->block + 1);
 	*p->block = 0;
 }
 
-static LZWOut(Private * p, short v)
+static void LZWOut(Private * p, short v)
 {				// output a value
 	p->blockv |= (v << p->blockb);
 	p->blockb += p->lzwbits;
@@ -260,7 +261,7 @@ static LZWOut(Private * p, short v)
 	}
 }
 
-static LZWClear(Private * p)
+static void LZWClear(Private * p)
 {
 	int c;
 	p->lzwbits = p->colbits + 1;
@@ -274,7 +275,7 @@ static LZWClear(Private * p)
 	}
 }
 
-static ImageStart(Private * p)
+static void ImageStart(Private * p)
 {
 	unsigned char b = p->colbits;
 	write(p->fh, &b, 1);
@@ -285,7 +286,7 @@ static ImageStart(Private * p)
 	LZWOut(p, p->cols);	// clear code
 }
 
-static ImageEnd(Private * p)
+static void ImageEnd(Private * p)
 {
 	LZWOut(p, p->lzwcode);	// last prefix
 	LZWOut(p, p->cols + 1);	// end code
@@ -294,7 +295,7 @@ static ImageEnd(Private * p)
 	LZWFlush(p);
 }
 
-static ImageOut(Private * p, unsigned char c)
+static void ImageOut(Private * p, unsigned char c)
 {
 	short next = p->lzw[p->lzwcode][c];
 	if (next == -1) {	// dead end
