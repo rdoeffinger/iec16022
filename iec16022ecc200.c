@@ -252,7 +252,8 @@ char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 		case 't':	// Text
 		case 'x':	// X12
 			{
-				char out[6], p = 0;
+				char out[6];
+				int p = 0;
 				const char *e,
 				    *s2 = "!\"#$%&'()*+,-./:;<=>?@[\\]_",
 				    *s3 = 0;
@@ -495,7 +496,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 {
 	char *encoding = 0;
 	int p = l;
-	char e;
+	int e;
 	struct {
 		// number of bytes of source that can be encoded in a row at this point
 		// using this encoding mode
@@ -510,7 +511,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 	if (l > MAXBARCODE)
 		return 0;	// not valid
 	while (p--) {
-		char b = 0, sub;
+		int b = 0, sub;
 		int sl, tl, bl, t;
 		// consider each encoding from this point
 		// ASCII
@@ -792,10 +793,10 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 	encoding = safemalloc(l + 1);
 	p = 0;
 	{
-		char cur = E_ASCII;	// starts ASCII
+		int cur = E_ASCII;	// starts ASCII
 		while (p < l) {
 			int t, m = 0;
-			char b = 0;
+			int b = 0;
 			for (e = 0; e < E_MAX; e++)
 				if (enc[p][e].t
 				    && ((t = enc[p][e].t + switchcost[cur][e]) <
