@@ -22,7 +22,14 @@
 #include <malloc.h>
 #include <string.h>
 #include <ctype.h>
+#ifdef _WIN32
+static inline unsigned htonl(unsigned i)
+{
+    return (i >> 24) | ((i & 0x00ff0000) >> 8) |  ((i & 0x0000ff00) << 8) | (i << 24);
+}
+#else
 #include <arpa/inet.h>
+#endif
 #include "image.h"
 
 #define	INTERLACE
