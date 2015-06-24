@@ -512,22 +512,6 @@ static void make_crc_table(void)
 	}
 }
 
-      /* Update a running CRC with the bytes buf[0..len-1]--the CRC
-         should be initialized to all 1's, and the transmitted value
-         is the 1's complement of the final running CRC (see the
-         crc() routine below)). */
-
-static unsigned int update_crc(unsigned int crc, unsigned char *buf, int len)
-{
-	unsigned int c = crc;
-	int n;
-
-	for (n = 0; n < len; n++)
-		c = crc_table[(c ^ buf[n]) & 0xff] ^ (c >> 8);
-
-	return c;
-}
-
 static unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
 {
 	write(fh, ptr, len);
