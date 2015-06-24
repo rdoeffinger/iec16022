@@ -1,4 +1,4 @@
-.TH iec16022 1 2006-01-14 "iec16022 0.1"
+.TH iec16022 1 2006-01-14 "iec16022 0.2.4"
 .SH NAME
 iec16022 \- program to generate 2d barcodes
 .SH SYNOPSIS
@@ -24,7 +24,7 @@ Sets the size of the generated barcode.
 Specifies the text to be encoded.
 .TP
 .B \-\-ecc 000|050|080|100|140|200
-Sets the type of ecc to be used.
+Sets the type of ecc to be used (default: 200).
 .TP
 .B \-i, \-\-infile filename
 Read input data from file.
@@ -32,7 +32,7 @@ Read input data from file.
 .B \-o, \-\-outfile filenmae
 Save output to file (instead of standard output).
 .TP
-.B \-f, \-\-format Text|EPS|Bin|Hex|Stamp|PNG
+.B \-f, \-\-format Text|UTF-8|EPS|Bin|Hex|Stamp|PNG
 Set the output type.
 .TP
 .B \-?, \-\-help
@@ -41,7 +41,7 @@ Show summary of options.
 .B \-\-usage
 Show short overview of options.
 .SH EXAMPLE
-To produce a datamatrix barcode for foobar in PNG format you need the following
+To produce a DataMatrix barcode for foobar in PNG format you need the following
 arguments:
 .TP
 .B iec16022 -f PNG -c foobar -o foobar.png
