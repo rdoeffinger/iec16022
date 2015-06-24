@@ -79,7 +79,7 @@ static void dumphex(unsigned char *grid, int W, int H, unsigned char p)
 
 int main(int argc, const char *argv[])
 {
-	char c;
+	int popt_err = 0;
 	int W = 0, H = 0;
 	int ecc = 0;
 	int barcodelen = 0;
@@ -122,11 +122,11 @@ int main(int argc, const char *argv[])
 	};
 	optCon = poptGetContext(NULL, argc, argv, optionsTable, 0);
 	poptSetOtherOptionHelp(optCon, "[barcode]");
-	if ((c = poptGetNextOpt(optCon)) < -1) {
+	if ((popt_err = poptGetNextOpt(optCon)) < -1) {
 		/* an error occurred during option processing */
 		fprintf(stderr, "%s: %s\n", poptBadOption(optCon,
 							  POPT_BADOPTION_NOALIAS),
-			poptStrerror(c));
+			poptStrerror(popt_err));
 		return 1;
 	}
 

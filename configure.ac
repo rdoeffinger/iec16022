@@ -1,4 +1,4 @@
-AC_INIT(iec16022, 0.2.4, stefan@datenfreihafen.org)
+AC_INIT(iec16022, 0.2.5, stefan@datenfreihafen.org)
 AM_INIT_AUTOMAKE([subdir-objects])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_MAINTAINER_MODE
@@ -22,7 +22,7 @@ dnl 5. If any interfaces have been added since the last public release, then inc
 dnl 6. If any interfaces have been removed since the last public release, then set age
 dnl    to 0.
 LT_VERSION_C=0
-LT_VERSION_R=0
+LT_VERSION_R=1
 LT_VERSION_A=0
 
 AC_SUBST(LT_VERSION_C)

@@ -1,3 +1,10 @@
+0.2.5
+	- Fix EDIFACT encoding
+	- Support output as UTF-8
+	- Minor code warning cleanup
+
+2015-06-24  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+
 0.2.4
 	- Install library for use by 3rd party applications (Jim Evins)
 	- Enable AM_SILENT_RULES if available
