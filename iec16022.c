@@ -335,7 +335,7 @@ int main(int argc, const char *argv[])
 				int x;
 				printf(" ");
 				for (x = 0; x < W; x++) {
-					static const char *map[] = {" ", "\xe2\x96\x80", "\xe2\x96\x84", "\xe2\x96\x88" };
+					static const char * const map[] = {" ", "\xe2\x96\x80", "\xe2\x96\x84", "\xe2\x96\x88" };
 					int top = 0;
 					int bottom = 0;
 					if (y < H) top = grid[W * y + x];

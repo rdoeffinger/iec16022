@@ -32,7 +32,7 @@
 #include "reedsol.h"
 #include "iec16022ecc200.h"
 
-static struct ecc200matrix_s {
+static const struct ecc200matrix_s {
 	int H, W;
 	int FH, FW;
 	int bytes;
@@ -466,7 +466,7 @@ enum {
 	E_MAX
 };
 
-unsigned char switchcost[E_MAX][E_MAX] = {
+static const unsigned char switchcost[E_MAX][E_MAX] = {
 	{0, 1, 1, 1, 1, 2},	// From E_ASCII
 	{1, 0, 2, 2, 2, 3},	// From E_C40
 	{1, 2, 0, 2, 2, 3},	// From E_TEXT
@@ -839,7 +839,7 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 	int W = 0, H = 0;
 	char *encoding = 0;
 	unsigned char *grid = 0;
-	struct ecc200matrix_s *matrix;
+	const struct ecc200matrix_s *matrix;
 	memset(binary, 0, sizeof(binary));
 	if (encodingptr)
 		encoding = *encodingptr;
