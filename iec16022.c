@@ -116,7 +116,7 @@ int main(int argc, const char *argv[])
 		{
 		 "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING,
 		 &format, 0,
-		 "Output format", "Text/EPS/PNG/Bin/Hex/Stamp"},
+		 "Output format", "Text/UTF-8/EPS/PNG/Bin/Hex/Stamp"},
 		POPT_AUTOHELP {
 			       NULL, 0, 0, NULL, 0}
 	};
@@ -326,6 +326,25 @@ int main(int argc, const char *argv[])
 					       grid[W * y + x] ? '*' : ' ');
 				printf("\n");
 			}
+		}
+		break;
+	case 'u': // UTF-8
+		{
+			int y;
+			for (y = H; y >= 0; y -= 2) {
+				int x;
+				printf(" ");
+				for (x = 0; x < W; x++) {
+					static const char *map[] = {" ", "\xe2\x96\x80", "\xe2\x96\x84", "\xe2\x96\x88" };
+					int top = 0;
+					int bottom = 0;
+					if (y < H) top = grid[W * y + x];
+					if (y > 0) bottom = grid[W * (y - 1) + x];
+					printf("%s", map[top + 2*bottom]);
+				}
+				printf("\n");
+			}
+			if (y == 0) printf("\n");
 		}
 		break;
 	case 'e':		// EPS
