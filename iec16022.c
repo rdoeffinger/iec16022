@@ -155,7 +155,7 @@ int main(int argc, const char *argv[])
 			return 1;
 		}
 		barcode[barcodelen] = 0;	// null terminate anyway
-		close(f);
+		fclose(f);
 	} else
 		barcodelen = strlen(barcode);
 	// check parameters
