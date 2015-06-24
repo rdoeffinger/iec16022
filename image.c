@@ -496,7 +496,7 @@ void ImageRect(Image * i, int x, int y, int w, int h, int c)
 static unsigned int crc_table[256];
 
       /* Make the table for a fast CRC. */
-void make_crc_table(void)
+static void make_crc_table(void)
 {
 	unsigned int c;
 	int n, k;
@@ -517,7 +517,7 @@ void make_crc_table(void)
          is the 1's complement of the final running CRC (see the
          crc() routine below)). */
 
-unsigned int update_crc(unsigned int crc, unsigned char *buf, int len)
+static unsigned int update_crc(unsigned int crc, unsigned char *buf, int len)
 {
 	unsigned int c = crc;
 	int n;
@@ -529,12 +529,12 @@ unsigned int update_crc(unsigned int crc, unsigned char *buf, int len)
 }
 
       /* Return the CRC of the bytes buf[0..len-1]. */
-unsigned int crc(unsigned char *buf, int len)
+static unsigned int crc(unsigned char *buf, int len)
 {
 	return update_crc(0xffffffffL, buf, len) ^ 0xffffffffL;
 }
 
-unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
+static unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
 {
 	write(fh, ptr, len);
 	while (len--)
@@ -542,7 +542,7 @@ unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
 	return c;
 }
 
-void writechunk(int fh, char *typ, void *ptr, int len)
+static void writechunk(int fh, char *typ, void *ptr, int len)
 {
 	unsigned int v = htonl(len), crc;
 	write(fh, &v, 4);
@@ -554,7 +554,7 @@ void writechunk(int fh, char *typ, void *ptr, int len)
 }
 
 #ifndef USEZLIB
-unsigned int adlersum(unsigned char *p, int l, unsigned int adler)
+static unsigned int adlersum(unsigned char *p, int l, unsigned int adler)
 {
 	unsigned int s1 = (adler & 65535), s2 = (adler >> 16);
 	while (l--) {

@@ -231,7 +231,7 @@ static void ecc200(unsigned char *binary, int bytes, int datablock, int rsblock)
  * necessary padding to tl
  */
 
-char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
+static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 		  char *encoding, int *lenp)
 {
 	char enc = 'a';		// start in ASCII encoding mode

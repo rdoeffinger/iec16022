@@ -35,7 +35,7 @@
 #include "config.h"
 
  // simple checked response malloc
-void *safemalloc(int n)
+static void *safemalloc(int n)
 {
 	void *p = malloc(n);
 	if (!p) {
@@ -46,7 +46,7 @@ void *safemalloc(int n)
 }
 
 // hex dump - bottom left pixel first
-void dumphex(unsigned char *grid, int W, int H, unsigned char p)
+static void dumphex(unsigned char *grid, int W, int H, unsigned char p)
 {
 	int c = 0, y;
 	for (y = 0; y < H; y++) {
