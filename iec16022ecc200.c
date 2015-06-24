@@ -356,26 +356,36 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 		case 'e':	// EDIFACT
 			{
 				unsigned char out[4], p = 0;
-				if (enc != newenc) {	// can only be from C40/Text/X12
+				if (enc != 'a' && enc != newenc) {	// can only be from C40/Text/X12
 					t[tp++] = 254;
 					enc = 'a';
 				}
+				if (enc == 'a')
+				{
+					t[tp++] = 240;
+					enc = 'e';
+				}
 				while (sp < sl && tolower(encoding[sp]) == 'e'
-				       && p < 4)
+				       && p < 4) {
+					if (s[sp] < 32 || s[sp] > 94) {
+						fprintf(stderr, "Cannot encode 0x%02X in EDIFACT\n", s[sp]);
+						return 0;
+					}
 					out[p++] = s[sp++];
+				}
 				if (p < 4) {
 					out[p++] = 0x1F;
 					enc = 'a';
 				}	// termination
-				t[tp] = ((s[0] & 0x3F) << 2);
-				t[tp++] |= ((s[1] & 0x30) >> 4);
-				t[tp] = ((s[1] & 0x0F) << 4);
+				t[tp] = ((out[0] & 0x3F) << 2);
+				t[tp++] |= ((out[1] & 0x30) >> 4);
+				t[tp] = ((out[1] & 0x0F) << 4);
 				if (p == 2)
 					tp++;
 				else {
-					t[tp++] |= ((s[2] & 0x3C) >> 2);
-					t[tp] = ((s[2] & 0x03) << 6);
-					t[tp++] |= (s[3] & 0x3F);
+					t[tp++] |= ((out[2] & 0x3C) >> 2);
+					t[tp] = ((out[2] & 0x03) << 6);
+					t[tp++] |= (out[3] & 0x3F);
 				}
 			}
 			break;
