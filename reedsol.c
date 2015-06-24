@@ -40,6 +40,7 @@
 
 #include <stdio.h>		// only needed for debug (main)
 #include <stdlib.h>		// only needed for malloc/free
+#include "reedsol.h"
 
 static int gfpoly;
 static int symsize;		// in bits
