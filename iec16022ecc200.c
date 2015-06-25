@@ -255,7 +255,7 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 				char out[6];
 				int p = 0;
 				const char *e,
-				    *s2 = "!\"#$%&'()*+,-./:;<=>?@[\\]_",
+				    *s2 = "!\"#$%&'()*+,-./:;<=>?@[\\]^_",
 				    *s3 = 0;
 				if (newenc == 'c') {
 					e = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
