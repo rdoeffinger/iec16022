@@ -919,7 +919,8 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 		if (!matrix->W) {
 			fprintf(stderr,
 				"Cannot find suitable size, barcode too long\n");
-			free(encoding);
+			if (!encodingptr || encoding != *encodingptr)
+				free(encoding);
 			return 0;
 		}
 		W = matrix->W;
@@ -928,7 +929,8 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 	if (!ecc200encode(binary, matrix->bytes, barcode, barcodelen,
 			  encoding, lenp)) {
 		fprintf(stderr, "Barcode too long for %dx%d\n", W, H);
-		free(encoding);
+		if (!encodingptr || encoding != *encodingptr)
+			free(encoding);
 		return 0;
 	}
 	// ecc code
