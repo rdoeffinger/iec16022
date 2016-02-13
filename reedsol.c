@@ -80,8 +80,8 @@ void rs_init_gf(int poly)
 
 	// Calculate the log/alog tables
 	logmod = (1 << m) - 1;
-	log = (int *)malloc(sizeof(int) * (logmod + 1));
-	alog = (int *)malloc(sizeof(int) * logmod);
+	log = (int *)calloc(logmod + 1, sizeof(*log));
+	alog = (int *)calloc(logmod, sizeof(*alog));
 
 	for (p = 1, v = 0; v < logmod; v++) {
 		alog[v] = p;
