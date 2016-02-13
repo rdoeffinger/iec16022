@@ -514,7 +514,8 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		short t;
 	} enc[MAXBARCODE][E_MAX];
 	memset(&enc, 0, sizeof(enc));
-	*lenp = 0;
+	if (lenp)
+		*lenp = 0;
 	if (!l)
 		return "";	// no length
 	if (l > MAXBARCODE)
