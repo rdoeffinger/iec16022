@@ -40,6 +40,7 @@
 
 #include <stdio.h>		// only needed for debug (main)
 #include <stdlib.h>		// only needed for malloc/free
+#include <string.h>             // only needed for memset
 #include "reedsol.h"
 
 static int gfpoly;
@@ -130,8 +131,7 @@ void rs_init_code(int nsym, int index)
 void rs_encode(int len, unsigned char *data, unsigned char *res)
 {
 	int i, k, m;
-	for (i = 0; i < rlen; i++)
-		res[i] = 0;
+	memset(res, 0, rlen);
 	for (i = 0; i < len; i++) {
 		m = res[rlen - 1] ^ data[i];
 		for (k = rlen - 1; k > 0; k--) {
