@@ -677,7 +677,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		sl = bl = 0;
 		if (s[p + 0] >= 32 && s[p + 0] <= 94) {	// can encode 1
 			char bs = 0;
-			if (p + 1 == l && (!bl || bl < 2)) {
+			if (p + 1 == l) {
 				bl = 2;
 				bs = 1;
 			} else
@@ -694,9 +694,11 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 						b = e;
 					}
 			if (p + 1 < l && s[p + 1] >= 32 && s[p + 1] <= 94) {	// can encode 2
-				if (p + 2 == l && (!bl || bl < 2)) {
-					bl = 3;
-					bs = 2;
+				if (p + 2 == l) {
+					if (!bl || bl > 2) {
+						bl = 3;
+						bs = 2;
+					}
 				} else
 					for (e = 0; e < E_MAX; e++)
 						if (e != E_EDIFACT
@@ -712,9 +714,11 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 							b = e;
 						}
 				if (p + 2 < l && s[p + 2] >= 32 && s[p + 2] <= 94) {	// can encode 3
-					if (p + 3 == l && (!bl || bl < 3)) {
-						bl = 3;
-						bs = 3;
+					if (p + 3 == l) {
+						if (!bl || bl > 3) {
+							bl = 3;
+							bs = 3;
+						}
 					} else
 						for (e = 0; e < E_MAX; e++)
 							if (e != E_EDIFACT
@@ -732,10 +736,11 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 								b = e;
 							}
 					if (p + 4 < l && s[p + 3] >= 32 && s[p + 3] <= 94) {	// can encode 4
-						if (p + 4 == l
-						    && (!bl || bl < 3)) {
-							bl = 3;
-							bs = 4;
+						if (p + 4 == l) {
+							if (!bl || bl > 3) {
+								bl = 3;
+								bs = 4;
+							}
 						} else {
 							for (e = 0; e < E_MAX;
 							     e++)
