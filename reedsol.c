@@ -72,10 +72,9 @@ void rs_init_gf(int poly)
 		rspoly = NULL;
 	}
 	// Find the top bit, and hence the symbol size
-	for (b = 1, m = 0; b <= poly; b <<= 1)
+	for (b = 2, m = 0; b <= poly; b <<= 1)
 		m++;
 	b >>= 1;
-	m--;
 	gfpoly = poly;
 	symsize = m;
 
