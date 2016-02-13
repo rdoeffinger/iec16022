@@ -1,4 +1,4 @@
-AM_CFLAGS = -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arith -Wredundant-decls -Werror=format-security -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -Werror-implicit-function-declaration -std=c99 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE
+AM_CFLAGS = -Bsymbolic -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arith -Wredundant-decls -Werror=format-security -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -Werror-implicit-function-declaration -std=c99 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE -Wl,--as-needed -Wl,--no-undefined
 
 SUBDIRS = test
 
