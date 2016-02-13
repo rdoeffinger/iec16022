@@ -567,7 +567,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		}
 		if (!sub) {	// can encode C40
 			bl = 0;
-			if (p + sl < l)
+			if (p + sl < l) {
 				for (e = 0; e < E_MAX; e++)
 					if (enc[p + sl][e].t
 					    &&
@@ -578,10 +578,11 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 						bl = t;
 						b = e;
 					}
-			if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {
-				// special case, switch to ASCII for last bytes
-				bl = 1;
-				b = E_ASCII;
+				if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {
+					// special case, switch to ASCII for last bytes
+					bl = 1;
+					b = E_ASCII;
+				}
 			}
 			enc[p][E_C40].t = tl + bl;
 			enc[p][E_C40].s = sl;
@@ -612,7 +613,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		}
 		if (!sub && sl) {	// can encode Text
 			bl = 0;
-			if (p + sl < l)
+			if (p + sl < l) {
 				for (e = 0; e < E_MAX; e++)
 					if (enc[p + sl][e].t
 					    &&
@@ -623,9 +624,10 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 						bl = t;
 						b = e;
 					}
-			if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {	// special case, switch to ASCII for last bytes
-				bl = 1;
-				b = E_ASCII;
+				if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {	// special case, switch to ASCII for last bytes
+					bl = 1;
+					b = E_ASCII;
+				}
 			}
 			enc[p][E_TEXT].t = tl + bl;
 			enc[p][E_TEXT].s = sl;
@@ -649,7 +651,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		} while (sub && p + sl < l);
 		if (!sub && sl) {	// can encode X12
 			bl = 0;
-			if (p + sl < l)
+			if (p + sl < l) {
 				for (e = 0; e < E_MAX; e++)
 					if (enc[p + sl][e].t
 					    &&
@@ -660,10 +662,11 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 						bl = t;
 						b = e;
 					}
-			if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {
-				// special case, switch to ASCII for last bytes
-				bl = 1;
-				b = E_ASCII;
+				if (exact && enc[p + sl][E_ASCII].t == 1 && 1 < bl) {
+					// special case, switch to ASCII for last bytes
+					bl = 1;
+					b = E_ASCII;
+				}
 			}
 			enc[p][E_X12].t = tl + bl;
 			enc[p][E_X12].s = sl;
