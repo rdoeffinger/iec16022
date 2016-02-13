@@ -344,7 +344,6 @@ int main(int argc, const char *argv[])
 				}
 				printf("\n");
 			}
-			if (y == 0) printf("\n");
 		}
 		break;
 	case 'e':		// EPS
