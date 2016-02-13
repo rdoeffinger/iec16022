@@ -150,7 +150,7 @@ void rs_encode(int len, unsigned char *data, unsigned char *res)
 	}
 }
 
-#ifndef LIB
+#ifdef TEST
 // The following tests the routines with the ISO/IEC 16022 Annexe R data
 int reedsol_main(void)
 {
