@@ -118,7 +118,7 @@ int main(int argc, const char *argv[])
 		 &format, 0,
 		 "Output format", "Text/UTF-8/EPS/PNG/Bin/Hex/Stamp"},
 		POPT_AUTOHELP {
-			       NULL, 0, 0, NULL, 0}
+			       NULL, 0, 0, NULL, 0, NULL, NULL}
 	};
 	optCon = poptGetContext(NULL, argc, argv, optionsTable, 0);
 	poptSetOtherOptionHelp(optCon, "[barcode]");

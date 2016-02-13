@@ -567,7 +567,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, char *comment)
 			unsigned char filter;
 			unsigned char interlace;
 		} ihdr = {
-		0, 0, 8, 3, 0, 0};
+		0, 0, 8, 3, 0, 0, 0};
 		ihdr.width = htonl(i->W);
 		ihdr.height = htonl(i->H);
 		writechunk(fh, "IHDR", &ihdr, 13);
