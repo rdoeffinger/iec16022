@@ -33,10 +33,10 @@
 #include "iec16022ecc200.h"
 
 static const struct ecc200matrix_s {
-	int H, W;
-	int FH, FW;
-	int bytes;
-	int datablock, rsblock;
+	unsigned char H, W;
+	unsigned char FH, FW;
+	unsigned short bytes;
+	unsigned char datablock, rsblock;
 } ecc200matrix[] = {
 	{ 10, 10, 10, 10, 3, 3, 5},	//
 	{ 12, 12, 12, 12, 5, 5, 7},	//
