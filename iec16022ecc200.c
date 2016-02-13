@@ -516,6 +516,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 		short t;
 	} enc[MAXBARCODE][E_MAX];
 	memset(&enc, 0, sizeof(enc));
+	*lenp = 0;
 	if (!l)
 		return "";	// no length
 	if (l > MAXBARCODE)
@@ -925,6 +926,11 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 		}
 		W = matrix->W;
 		H = matrix->H;
+	}
+	if (!encoding) {
+		fprintf(stderr,
+			"Barcode too long, could not find encoding\n");
+		return 0;
 	}
 	if (!ecc200encode(binary, matrix->bytes, barcode, barcodelen,
 			  encoding, lenp)) {
