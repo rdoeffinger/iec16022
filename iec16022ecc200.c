@@ -411,14 +411,12 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 		case 'b':	// Binary
 			{
 				int l = 0;	// how much to encode
-				if (encoding) {
-					int p;
-					for (p = sp;
-					     p < sl
-					     && tolower(encoding[p]) == 'b';
-					     p++)
-						l++;
-				}
+				int p;
+				for (p = sp;
+				     p < sl
+				     && tolower(encoding[p]) == 'b';
+				     p++)
+					l++;
 				t[tp++] = 231;	// base256
 				if (l < 250)
 					t[tp++] = l;
