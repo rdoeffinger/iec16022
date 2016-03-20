@@ -39,9 +39,15 @@
 #ifndef __IEC16022ECC200_H
 #define __IEC16022ECC200_H
 
+#define IEC16022_FLAG_GS1 1
+
 unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 			      int barcodelen, unsigned char *barcode,
 			      int *lenp, int *maxp, int *eccp);
+
+unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
+			      int barcodelen, unsigned char *barcode,
+			      int *lenp, int *maxp, int *eccp, int flags);
 #define MAXBARCODE 3116
 
 #endif				/* __IEC16022ECC200_H */

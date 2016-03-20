@@ -232,11 +232,17 @@ static void ecc200(unsigned char *binary, int bytes, int datablock, int rsblock)
  */
 
 static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
-		  char *encoding, int *lenp)
+		  char *encoding, int *lenp, int flags)
 {
 	char enc = 'a';		// start in ASCII encoding mode
 	int tp = 0, sp = 0;
-	if (strlen(encoding) < sl) {
+	if (flags & IEC16022_FLAG_GS1) {
+		t[tp++] = 232;
+		if (sl >= 3 && s[0] == ']' && s[1] == 'd' && s[2] == '2') {
+			sp = 3;
+		}
+	}
+	if (strlen(encoding) < sl - sp) {
 		fprintf(stderr, "Encoding string too short\n");
 		return 0;
 	}
@@ -834,6 +840,13 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 	return encoding;
 }
 
+unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
+			      int barcodelen, unsigned char *barcode,
+			      int *lenp, int *maxp, int *eccp)
+{
+    return iec16022ecc200f(Wptr, Hptr, encodingptr, barcodelen, barcode, lenp, maxp, eccp, 0);
+}
+
 /*
  * Main encoding function
  * Returns the grid (malloced) containing the matrix. L corner at 0,0.
@@ -849,9 +862,9 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
  * Returns 0 on error (writes to stderr with details).
  */
 
-unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
+unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 			      int barcodelen, unsigned char *barcode,
-			      int *lenp, int *maxp, int *eccp)
+			      int *lenp, int *maxp, int *eccp, int flags)
 {
 	unsigned char binary[3000];	// encoded raw data and ecc to place in barcode
 	int W = 0, H = 0;
@@ -899,7 +912,7 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 			for (matrix = ecc200matrix; matrix->W; matrix++)
 				if (ecc200encode
 				    (binary, matrix->bytes, barcode, barcodelen,
-				     encoding, 0))
+				     encoding, 0, flags))
 					break;
 		} else {
 			int len;
@@ -932,7 +945,7 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
 		return 0;
 	}
 	if (!ecc200encode(binary, matrix->bytes, barcode, barcodelen,
-			  encoding, lenp)) {
+			  encoding, lenp, flags)) {
 		fprintf(stderr, "Barcode too long for %dx%d\n", W, H);
 		if (!encodingptr || encoding != *encodingptr)
 			free(encoding);

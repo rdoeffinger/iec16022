@@ -79,6 +79,8 @@ static void dumphex(unsigned char *grid, int W, int H, unsigned char p)
 
 int main(int argc, const char *argv[])
 {
+	int flags = 0;
+	int gs1 = 0;
 	int popt_err = 0;
 	int W = 0, H = 0;
 	int ecc = 0;
@@ -117,6 +119,7 @@ int main(int argc, const char *argv[])
 		 "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING,
 		 &format, 0,
 		 "Output format", "Text/UTF-8/EPS/PNG/Bin/Hex/Stamp"},
+		{"gs1", 0, POPT_ARG_NONE, &gs1, 0, "Enable GS1 mode, start with FNC1", 0},
 		POPT_AUTOHELP {
 			       NULL, 0, 0, NULL, 0, NULL, NULL}
 	};
@@ -137,6 +140,7 @@ int main(int argc, const char *argv[])
 		poptPrintUsage(optCon, stderr, 0);
 		return -1;
 	}
+	flags |= gs1 ? IEC16022_FLAG_GS1 : 0;
 	if (outfile && !freopen(outfile, "w", stdout)) {
 		perror(outfile);
 		return 1;
@@ -276,8 +280,8 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "Not done odd sizes yet, sorry\n");
 	} else {		// even sizes
 		grid =
-		    iec16022ecc200(&W, &H, &encoding, barcodelen, barcode, &len,
-				   &maxlen, &ecclen);
+		    iec16022ecc200f(&W, &H, &encoding, barcodelen, barcode, &len,
+				   &maxlen, &ecclen, flags);
 	}
 
 	// output
