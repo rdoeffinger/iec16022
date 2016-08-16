@@ -327,11 +327,11 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 							}
 						}
 					}
-					if (p == 2 && tp + 2 == tl && sp == sl)
-						out[p++] = 0;	// shift 1 pad at end
-					while (p >= 3) {
-						int v =
-						    out[0] * 1600 +
+					while (p >= 3 || (p && sp == sl)) {
+						int v;
+						while (p < 3) out[p++] = 0; // pad at end
+						if (tp + 2 >= tl) return 0; // not enough space
+						v = out[0] * 1600 +
 						    out[1] * 40 + out[2] + 1;
 						if (enc != newenc) {
 							if (enc == 'c'
@@ -434,6 +434,7 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 					t[tp] = s[sp++] + (((tp + 1) * 149) % 255) + 1;	// see annex H
 					tp++;
 				}
+				if (l) return 0; // not enough space
 				enc = 'a';	// reverse to ASCII at end
 			}
 			break;
