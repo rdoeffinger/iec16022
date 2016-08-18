@@ -2,7 +2,7 @@ AM_CFLAGS = -Bsymbolic -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arit
 
 image.lo: AM_CFLAGS += -Wno-unused-result
 
-SUBDIRS = test
+SUBDIRS = . test
 
 lib_LTLIBRARIES = libiec16022.la
 
@@ -16,6 +16,7 @@ libiec16022includedir = $(includedir)/iec16022
 libiec16022_la_LDFLAGS = -version-number $(LT_VERSION_C):$(LT_VERSION_R):$(LT_VERSION_A)
 
 bin_PROGRAMS = iec16022
+check_PROGRAMS = iec16022
 
 man_MANS = iec16022.1
 
