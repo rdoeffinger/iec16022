@@ -33,6 +33,7 @@ libiec16022_la_SOURCES =	\
 	reedsol.h
 
 EXTRA_DIST = 				\
+	iec16022.1.in			\
 	libiec16022.pc.in		\
 	test/testsuite.sh 		\
 	test/testsuite-example.bin	\

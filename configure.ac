@@ -56,4 +56,5 @@ AC_OUTPUT([
 Makefile
 test/Makefile
 libiec16022.pc
+iec16022.1
 ])
