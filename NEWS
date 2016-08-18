@@ -1,3 +1,17 @@
+0.2.7
+	- Fixed versioning in distributed package
+	- Bugfix release
+
+2015-06-24  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+
+0.2.6
+	- Fixed a bug where data was omitted from barcode
+	  because algorithm chose the wrong barcode length.
+	- Partial support for GS1 encoding
+	- Several code cleanups
+
+2016-06-16  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+
 0.2.5
 	- Fix EDIFACT encoding
 	- Support output as UTF-8
