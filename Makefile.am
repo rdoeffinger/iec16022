@@ -43,6 +43,7 @@ EXTRA_DIST = 				\
 	test/testsuite-example.hex	\
 	test/testsuite-example.png	\
 	test/testsuite-example.text	\
+	test/testsuite-example.utf8	\
 	$(man_MANS)
 
 pkgconfigdir = $(libdir)/pkgconfig
