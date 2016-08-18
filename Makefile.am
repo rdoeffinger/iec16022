@@ -36,6 +36,8 @@ libiec16022_la_SOURCES =	\
 	reedsol.h
 
 EXTRA_DIST = 				\
+	autogen.sh			\
+	autogen-clean.sh		\
 	iec16022.1.in			\
 	libiec16022.pc.in		\
 	test/testsuite.sh 		\
