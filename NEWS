@@ -2,7 +2,7 @@
 	- Fixed versioning in distributed package
 	- Bugfix release
 
-2015-06-24  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+2016-08-19  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
 
 0.2.6
 	- Fixed a bug where data was omitted from barcode
@@ -10,7 +10,7 @@
 	- Partial support for GS1 encoding
 	- Several code cleanups
 
-2016-06-16  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+2016-08-16  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
 
 0.2.5
 	- Fix EDIFACT encoding
