@@ -1,6 +1,8 @@
 AM_CFLAGS = -Bsymbolic -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arith -Wredundant-decls -Werror=format-security -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -Werror-implicit-function-declaration -std=c99 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE -Wl,--as-needed -Wl,--no-undefined -fno-asynchronous-unwind-tables
 
-SUBDIRS = test
+image.lo: AM_CFLAGS += -Wno-unused-result
+
+SUBDIRS = . test
 
 lib_LTLIBRARIES = libiec16022.la
 
@@ -14,6 +16,7 @@ libiec16022includedir = $(includedir)/iec16022
 libiec16022_la_LDFLAGS = -version-number $(LT_VERSION_C):$(LT_VERSION_R):$(LT_VERSION_A)
 
 bin_PROGRAMS = iec16022
+check_PROGRAMS = iec16022
 
 man_MANS = iec16022.1
 
@@ -33,6 +36,9 @@ libiec16022_la_SOURCES =	\
 	reedsol.h
 
 EXTRA_DIST = 				\
+	autogen.sh			\
+	autogen-clean.sh		\
+	iec16022.1.in			\
 	libiec16022.pc.in		\
 	test/testsuite.sh 		\
 	test/testsuite-example.bin	\
@@ -40,6 +46,7 @@ EXTRA_DIST = 				\
 	test/testsuite-example.hex	\
 	test/testsuite-example.png	\
 	test/testsuite-example.text	\
+	test/testsuite-example.utf8	\
 	$(man_MANS)
 
 pkgconfigdir = $(libdir)/pkgconfig
