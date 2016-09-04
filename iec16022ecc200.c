@@ -523,8 +523,11 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 	memset(&enc, 0, sizeof(enc));
 	if (lenp)
 		*lenp = 0;
-	if (!l)
-		return "";	// no length
+	if (!l) {
+		encoding = safemalloc(1);
+		*encoding = 0;
+		return encoding;	// no length
+	}
 	if (l > MAXBARCODE)
 		return 0;	// not valid
 	while (p--) {
