@@ -231,8 +231,8 @@ static void ecc200(unsigned char *binary, int bytes, int datablock, int rsblock)
  * necessary padding to tl
  */
 
-static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
-		  char *encoding, int *lenp, int flags)
+static char ecc200encode(unsigned char *t, int tl, const unsigned char *s, int sl,
+		  const char *encoding, int *lenp, int flags)
 {
 	char enc = 'a';		// start in ASCII encoding mode
 	int tp = 0, sp = 0;
@@ -469,7 +469,7 @@ static char ecc200encode(unsigned char *t, int tl, unsigned char *s, int sl,
 }
 
 // Auto encoding format functions
-static char encchr[] = "ACTXEB";
+static const char encchr[] = "ACTXEB";
 
 enum {
 	E_ASCII,
@@ -507,7 +507,7 @@ static const unsigned char switchcost[E_MAX][E_MAX] = {
  * otherwise free the result and try again with exact=0
  */
 
-static char *encmake(int l, unsigned char *s, int *lenp, char exact)
+static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 {
 	char *encoding = 0;
 	int p = l;
@@ -842,7 +842,7 @@ static char *encmake(int l, unsigned char *s, int *lenp, char exact)
 }
 
 unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
-			      int barcodelen, unsigned char *barcode,
+			      int barcodelen, const unsigned char *barcode,
 			      int *lenp, int *maxp, int *eccp)
 {
     return iec16022ecc200f(Wptr, Hptr, encodingptr, barcodelen, barcode, lenp, maxp, eccp, 0);
@@ -864,7 +864,7 @@ unsigned char *iec16022ecc200(int *Wptr, int *Hptr, char **encodingptr,
  */
 
 unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
-			      int barcodelen, unsigned char *barcode,
+			      int barcodelen, const unsigned char *barcode,
 			      int *lenp, int *maxp, int *eccp, int flags)
 {
 	unsigned char binary[3000];	// encoded raw data and ecc to place in barcode

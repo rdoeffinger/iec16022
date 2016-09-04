@@ -46,7 +46,7 @@ static void *safemalloc(int n)
 }
 
 // hex dump - bottom left pixel first
-static void dumphex(unsigned char *grid, int W, int H, unsigned char p)
+static void dumphex(const unsigned char *grid, int W, int H, unsigned char p)
 {
 	int c = 0, y;
 	for (y = 0; y < H; y++) {
@@ -86,12 +86,12 @@ int main(int argc, const char *argv[])
 	int ecc = 0;
 	int barcodelen = 0;
 	char *encoding = 0;
-	char *outfile = 0;
-	char *infile = 0;
+	const char *outfile = 0;
+	const char *infile = 0;
 	char *barcode = 0;
-	char *format = "Text";
-	char *size = 0;
-	char *eccstr = 0;
+	const char *format = "Text";
+	const char *size = 0;
+	const char *eccstr = 0;
 	int len = 0, maxlen = 0, ecclen = 0;
 	unsigned char *grid = 0;
 	poptContext optCon;	// context for parsing command-line options

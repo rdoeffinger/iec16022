@@ -328,7 +328,7 @@ static void ImageOut(Private * p, unsigned char c)
 }
 
 // write GIF image
-void ImageWriteGif(Image * i, int fh, int back, int trans, char *comment)
+void ImageWriteGif(Image * i, int fh, int back, int trans, const char *comment)
 {
 	struct strPrivate p;
 	p.fh = fh;
@@ -430,7 +430,7 @@ void ImageWriteGif(Image * i, int fh, int back, int trans, char *comment)
 	write(fh, "\x3B", 1);	// trailer
 }
 
-void ImageText(Image * i, int x, int y, int col, char *text)
+void ImageText(Image * i, int x, int y, int col, const char *text)
 {				// writes 8x8 text
 	if (i && text)
 		while (*text) {
@@ -453,7 +453,7 @@ void ImageText(Image * i, int x, int y, int col, char *text)
 		}
 }
 
-void ImageSmall(Image * i, int x, int y, int col, char *text)
+void ImageSmall(Image * i, int x, int y, int col, const char *text)
 {				// writes 4x6 digits
 	if (i && text)
 		while (*text) {
@@ -519,7 +519,7 @@ static void make_crc_table(void)
 	}
 }
 
-static unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
+static unsigned int writecrc(int fh, const char *ptr, int len, unsigned int c)
 {
 	write(fh, ptr, len);
 	while (len--)
@@ -527,7 +527,7 @@ static unsigned int writecrc(int fh, char *ptr, int len, unsigned int c)
 	return c;
 }
 
-static void writechunk(int fh, char *typ, void *ptr, int len)
+static void writechunk(int fh, const char *typ, const void *ptr, int len)
 {
 	unsigned int v = htonl(len), crc;
 	write(fh, &v, 4);
@@ -539,7 +539,7 @@ static void writechunk(int fh, char *typ, void *ptr, int len)
 }
 
 #ifndef USEZLIB
-static unsigned int adlersum(unsigned char *p, int l, unsigned int adler)
+static unsigned int adlersum(const unsigned char *p, int l, unsigned int adler)
 {
 	unsigned int s1 = (adler & 65535), s2 = (adler >> 16);
 	while (l--) {
@@ -553,7 +553,7 @@ static unsigned int adlersum(unsigned char *p, int l, unsigned int adler)
 #endif
 
 // write PNG image
-void ImageWritePNG(Image * i, int fh, int back, int trans, char *comment)
+void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 {
 	make_crc_table();
 	write(fh, "\211PNG\r\n\032\n", 8);	// PNG header
@@ -588,7 +588,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, char *comment)
 		writechunk(fh, "bKGD", &b, 1);
 	}
 	if (*comment) {		// tEXt
-		char c[] = "Comment";
+		static const char c[] = "Comment";
 		unsigned int v = htonl(strlen(c) + strlen(comment) + 1), crc;
 		write(fh, &v, 4);
 		crc = writecrc(fh, "tEXt", 4, ~0);

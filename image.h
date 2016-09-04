@@ -39,10 +39,10 @@ typedef struct {
 
 Image *ImageNew(int w, int h, int c);	// create a new blank image
 void ImageFree(Image * i);	// free an image
-void ImageWriteGif(Image * i, int fh, int back, int trans, char *comment);
-void ImageWritePNG(Image * i, int fh, int back, int trans, char *comment);
-void ImageText(Image * i, int x, int y, int c, char *text);	// write 8x8 text
-void ImageSmall(Image * i, int x, int y, int c, char *text);	// write 4x6 text
+void ImageWriteGif(Image * i, int fh, int back, int trans, const char *comment);
+void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment);
+void ImageText(Image * i, int x, int y, int c, const char *text);	// write 8x8 text
+void ImageSmall(Image * i, int x, int y, int c, const char *text);	// write 4x6 text
 void ImageRect(Image * i, int x, int y, int w, int h, int c);	// fill a box
 #define ImageWrite ImageWritePNG	// default
 

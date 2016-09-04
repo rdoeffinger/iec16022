@@ -127,7 +127,7 @@ void rs_init_code(int nsym, int index)
 // symbol sizes up to 8 bits.  Just change the data type of data and res
 // to unsigned int * for larger symbols.
 
-void rs_encode(int len, unsigned char *data, unsigned char *res)
+void rs_encode(int len, const unsigned char *data, unsigned char *res)
 {
 	int i, k, m;
 	memset(res, 0, rlen);
@@ -155,7 +155,7 @@ int reedsol_main(void)
 {
 	register int i;
 
-	unsigned char data[9] = { 142, 164, 186 };
+	static const unsigned char data[9] = { 142, 164, 186 };
 	unsigned char out[5];
 
 	rs_init_gf(0x12d);
