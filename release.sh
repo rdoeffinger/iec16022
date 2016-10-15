@@ -8,6 +8,10 @@ if ! grep -q "^$(date --iso-8601=date)" NEWS ; then
     echo "Expect today's date in NEWS!"
     exit 1
 fi
+make distclean
+./autogen.sh
+make dist
+gpg -a --detach-sign iec16022-$VER.tar.xz
 git tag -s v${VER}
 ./winbuild.sh
 make iec16022.signed.exe
