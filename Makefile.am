@@ -17,6 +17,7 @@ libiec16022_la_LDFLAGS = -version-number $(LT_VERSION_C):$(LT_VERSION_R):$(LT_VE
 
 bin_PROGRAMS = iec16022
 check_PROGRAMS = iec16022
+EXTRA_PROGRAMS = fuzzer
 
 man_MANS = iec16022.1
 
@@ -26,6 +27,9 @@ iec16022_SOURCES =	\
 iec16022_LDADD =	\
 	libiec16022.la  \
 	-lpopt
+
+fuzzer_SOURCES = fuzzer.c
+fuzzer_LDADD = $(iec16022_LDADD)
 
 libiec16022_la_SOURCES =	\
 	iec16022ecc200.c	\
@@ -52,5 +56,5 @@ EXTRA_DIST =				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= libiec16022.pc
 
-%.signed.exe: %.exe
+iec16022.signed.exe: iec16022.exe
 	osslsigncode sign -ts http://timestamp.globalsign.com/scripts/timestamp.dll -certs $(SIGNKEY).crt -key $(SIGNKEY).key -in $^ -out $@
