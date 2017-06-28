@@ -56,5 +56,5 @@ EXTRA_DIST =				\
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= libiec16022.pc
 
-iec16022.signed.exe: iec16022.exe
+iec16022.signed.exe: .libs/iec16022.exe
 	osslsigncode sign -ts http://timestamp.globalsign.com/scripts/timestamp.dll -certs $(SIGNKEY).crt -key $(SIGNKEY).key -in $^ -out $@
