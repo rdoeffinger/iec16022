@@ -1,3 +1,11 @@
+0.3.0
+	- Fixed incorrect open mode, leading to
+	  corrupted output files at least on Windows
+	- Removed various unused Image* functions even
+          though they were exported by the .so before
+
+2017-07-06  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+
 0.2.7
 	- Fixed versioning in distributed package
 	- Bugfix release
