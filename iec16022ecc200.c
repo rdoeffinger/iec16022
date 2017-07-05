@@ -72,9 +72,9 @@ static const struct ecc200matrix_s {
 };
 
  // simple checked response malloc
-static void *safemalloc(int n)
+static void *safemalloc(int n, int s)
 {
-	void *p = malloc(n);
+	void *p = calloc(n, s);
 	if (!p) {
 		fprintf(stderr, "Malloc(%d) failed\n", n);
 		exit(1);
@@ -161,9 +161,8 @@ static void ecc200placementcornerD(int *array, int NR, int NC, int p)
 // Annex M placement alorithm main function
 static void ecc200placement(int *array, int NR, int NC)
 {
+	// array must be cleared by caller
 	int r, c, p;
-	// invalidate
-	memset(array, 0, NC * NR);
 	// start
 	p = 1;
 	r = 4;
@@ -522,7 +521,7 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 	if (lenp)
 		*lenp = 0;
 	if (!l) {
-		encoding = safemalloc(1);
+		encoding = safemalloc(1, 1);
 		*encoding = 0;
 		return encoding;	// no length
 	}
@@ -816,7 +815,7 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 		 * fprintf (stderr, "\n");
 		 */
 	}
-	encoding = safemalloc(l + 1);
+	encoding = safemalloc(1, l + 1);
 	p = 0;
 	{
 		int cur = E_ASCII;	// starts ASCII
@@ -960,10 +959,9 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 		int x, y, NC, NR, *places;
 		NC = W - 2 * (W / matrix->FW);
 		NR = H - 2 * (H / matrix->FH);
-		places = safemalloc(NC * NR * sizeof(int));
+		places = safemalloc(NC, NR * sizeof(int));
 		ecc200placement(places, NR, NC);
-		grid = safemalloc(W * H + 16); // extra padding to simplify some operations
-		memset(grid, 0, W * H + 16);
+		grid = safemalloc(H, W + 16); // extra padding to simplify some operations
 		for (y = 0; y < H; y += matrix->FH) {
 			memset(grid + y * W, 1, W);
 			for (x = 0; x < W; x += 2)

@@ -192,42 +192,36 @@ static unsigned char const small[] = {
 
 Image *ImageNew(int w, int h, int c)
 {				// create a new blank image
-	Image *i;
+	Image *i = NULL;
 	if (!w || !h)
-		return 0;
-	i = malloc(sizeof(*i));
+		goto err_out;
+	i = calloc(1, sizeof(*i));
 	if (!i)
-		return 0;
-	memset(i, 0, sizeof(*i));
+		goto err_out;
 	i->W = w;
 	i->L = w + 1;
 	i->H = h;
 	i->C = c;
-	i->Image = malloc((w + 1) * h);
-	if (!i->Image) {
-		free(i);
-		return 0;
-	}
-	memset(i->Image, 0, (w + 1) * h);
+	i->Image = calloc(h, w + 1);
+	if (!i->Image)
+		goto err_out;
 	if (c) {
-		i->Colour = malloc(sizeof(Colour) * c);
-		if (!i->Colour) {
-			free(i->Image);
-			free(i);
-			return 0;
-		}
-		memset(i->Colour, 0, sizeof(Colour) * c);
+		i->Colour = calloc(c, sizeof(Colour));
+		if (!i->Colour)
+			goto err_out;
 	}
 	return i;
+
+err_out:
+	ImageFree(i);
+	return 0;
 }
 
 void ImageFree(Image * i)
 {				// free an image
 	if (i) {
-		if (i->Image)
-			free(i->Image);
-		if (i->Colour)
-			free(i->Colour);
+		free(i->Image);
+		free(i->Colour);
 		free(i);
 	}
 }
