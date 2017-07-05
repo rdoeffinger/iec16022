@@ -14,5 +14,6 @@ make dist
 gpg -a --detach-sign iec16022-$VER.tar.xz
 git tag -s v${VER}
 ./winbuild.sh
+strip .libs/iec16022.exe
 make iec16022.signed.exe
 cp iec16022.signed.exe iec16022-$VER.exe
