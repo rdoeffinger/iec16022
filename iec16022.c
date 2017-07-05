@@ -141,7 +141,7 @@ int main(int argc, const char *argv[])
 		return -1;
 	}
 	flags |= gs1 ? IEC16022_FLAG_GS1 : 0;
-	if (outfile && !freopen(outfile, "w", stdout)) {
+	if (outfile && !freopen(outfile, "wb", stdout)) {
 		perror(outfile);
 		return 1;
 	}
