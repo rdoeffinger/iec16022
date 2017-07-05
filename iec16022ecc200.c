@@ -163,9 +163,7 @@ static void ecc200placement(int *array, int NR, int NC)
 {
 	int r, c, p;
 	// invalidate
-	for (r = 0; r < NR; r++)
-		for (c = 0; c < NC; c++)
-			array[r * NC + c] = 0;
+	memset(array, 0, NC * NR);
 	// start
 	p = 1;
 	r = 4;
@@ -958,16 +956,16 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 	// ecc code
 	ecc200(binary, matrix->bytes, matrix->datablock, matrix->rsblock);
 	{			// placement
+		int border_offset_y;
 		int x, y, NC, NR, *places;
 		NC = W - 2 * (W / matrix->FW);
 		NR = H - 2 * (H / matrix->FH);
 		places = safemalloc(NC * NR * sizeof(int));
 		ecc200placement(places, NR, NC);
-		grid = safemalloc(W * H);
-		memset(grid, 0, W * H);
+		grid = safemalloc(W * H + 16); // extra padding to simplify some operations
+		memset(grid, 0, W * H + 16);
 		for (y = 0; y < H; y += matrix->FH) {
-			for (x = 0; x < W; x++)
-				grid[y * W + x] = 1;
+			memset(grid + y * W, 1, W);
 			for (x = 0; x < W; x += 2)
 				grid[(y + matrix->FH - 1) * W + x] = 1;
 		}
@@ -977,16 +975,20 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 			for (y = 0; y < H; y += 2)
 				grid[y * W + x + matrix->FW - 1] = 1;
 		}
+		border_offset_y = -1;
 		for (y = 0; y < NR; y++) {
+			int border_offset_x = -1;
+			// jump over the 2 border pixels
+			if (y % (matrix->FH - 2) == 0) border_offset_y += 2;
 			for (x = 0; x < NC; x++) {
 				int v = places[(NR - y - 1) * NC + x];
+				// jump over the 2 border pixels
+				if (x % (matrix->FW - 2) == 0) border_offset_x += 2;
 				//fprintf (stderr, "%4d", v);
 				if (v == 1 || v > 7
 				    && (binary[(v >> 3) - 1] & (1 << (v & 7))))
-					grid[(1 + y +
-					      2 * (y / (matrix->FH - 2))) * W +
-					     1 + x +
-					     2 * (x / (matrix->FW - 2))] = 1;
+					grid[(y + border_offset_y) * W +
+					     x + border_offset_x] = 1;
 			}
 			//fprintf (stderr, "\n");
 		}
