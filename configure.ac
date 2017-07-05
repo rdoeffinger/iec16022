@@ -1,4 +1,4 @@
-AC_INIT(iec16022, 0.2.7, Reimar.Doeffinger@gmx.de)
+AC_INIT(iec16022, 0.2.8, Reimar.Doeffinger@gmx.de)
 AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-xz])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_MAINTAINER_MODE
