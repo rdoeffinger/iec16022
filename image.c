@@ -177,15 +177,20 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 		write(fh, &v, 4);
 	}
 	{			// tRNS
+		int has_alpha = 0;
 		unsigned char alpha[256];
 		int n;
-		for (n = 0; n < i->C; n++)
+		for (n = 0; n < i->C; n++) {
 			// 4th palette byte treated as 0=opaque, 255-transparren
 			alpha[n] = 255 - (i->Colour[n] >> 24);
-		if (trans >= 0 && trans < i->C)
+			has_alpha |= alpha[n] != 255;
+		}
+		if (trans >= 0 && trans < i->C) {
 			// manual set of specific transparrent colour
 			alpha[trans] = 0;
-		writechunk(fh, "tRNS", alpha, i->C);
+			has_alpha = 1;
+		}
+		if (has_alpha) writechunk(fh, "tRNS", alpha, i->C);
 	}
 #ifndef USEZLIB
 	{			// IDAT
