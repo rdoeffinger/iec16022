@@ -19,6 +19,7 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
 #include <malloc.h>
 #include <string.h>
 #include <ctype.h>
@@ -34,7 +35,7 @@ static inline unsigned htonl(unsigned i)
 
 #define	INTERLACE
 #define CLEAR
-#define USEZLIB
+//#define USEZLIB
 
 #ifdef USEZLIB
 #include <zlib.h>
@@ -131,9 +132,58 @@ static unsigned int adlersum(const unsigned char *p, int l, unsigned int adler)
 }
 #endif
 
+#ifndef USEZLIB
+// p must start with an unused byte.
+static void writeUncompressed(int fh, unsigned char *p, int len, int last, unsigned int *crc, unsigned int *adler)
+{
+	unsigned char h[5];
+	h[0] = !!last;	// last chunk in deflate, un compressed
+	h[1] = len & 255;	// Len, LSB first as per deflate spec
+	h[2] = len / 256;
+	h[3] = ~h[1];	// Inverse of Len
+	h[4] = ~h[2];
+	*crc = writecrc(fh, h, 5, *crc);
+	*crc = writecrc(fh, p, len, *crc);
+	*adler = adlersum(p, len, *adler);
+}
+#endif
+
+// Repack image as 1bpp array into new buffer
+// including initial 0 filter byte before each row.
+// Returned pointer must be freed.
+static unsigned char *repack1bpp(const Image *i, int *packed_len)
+{
+	int len = (i->L + 8 + 6) / 8 * i->H;
+	unsigned char *p = i->Image;
+	unsigned char *out = calloc(len, 1);
+	unsigned char *tmp = out;
+	unsigned int n = i->H;
+	unsigned char mask = i->Colour[0] == 0 ? 0 : 0xff;
+	while (n--) {
+		int m = i->L, b = 9;
+		p++;
+		*tmp++ = 0;
+		while (--m) {
+			if (--b == 0) { *tmp++ ^= mask; b = 8; }
+			*tmp = (*tmp << 1) | *p++;
+		}
+		*tmp++ ^= mask;
+	}
+	*packed_len = len;
+	return out;
+}
+
 // write PNG image
 void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 {
+	// check if it is a 1 bpp image black-and-white image
+	int is_1bpp = back < 0 && trans < 0 && i->C == 2 &&
+		(i->Colour[0] == 0xffffff && i->Colour[1] == 0x000000 ||
+		 i->Colour[0] == 0x000000 && i->Colour[1] == 0xffffff);
+#ifndef USEZLIB
+	// only supported if it fits in one zlib chunk
+	is_1bpp &= (i->L + 8 + 6) / 8 * i->H <= 0xffff;
+#endif
 	make_crc_table();
 	write(fh, "\211PNG\r\n\032\n", 8);	// PNG header
 	{			// IHDR
@@ -146,12 +196,12 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 			unsigned char filter;
 			unsigned char interlace;
 		} ihdr = {
-		0, 0, 8, 3, 0, 0, 0};
+		0, 0, is_1bpp ? 1 : 8, is_1bpp ? 0 : 3, 0, 0, 0};
 		ihdr.width = htonl(i->W);
 		ihdr.height = htonl(i->H);
 		writechunk(fh, "IHDR", &ihdr, 13);
 	}
-	{			// PLTE
+	if (!is_1bpp) {			// PLTE
 		unsigned int v = htonl(i->C * 3), crc, n;
 		write(fh, &v, 4);
 		crc = writecrc(fh, "PLTE", 4, ~0);
@@ -195,24 +245,24 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 #ifndef USEZLIB
 	{			// IDAT
 		unsigned int v = htonl(i->H * (i->L + 5) + 6),
-		    crc, adler = 1, n;
+		    crc, adler = 1;
 		unsigned char *p = i->Image;
+		if (is_1bpp) v = htonl(5 + (i->L + 8 + 6) / 8 * i->H + 6);
 		write(fh, &v, 4);
 		crc = writecrc(fh, "IDAT", 4, ~0);
 		crc = writecrc(fh, "\170\001", 2, crc);	// zlib header for deflate
-		n = i->H;
-		while (n--) {
-			unsigned char h[5];
-			h[0] = (n ? 0 : 1);	// last chunk in deflate, un compressed
-			h[1] = (i->L & 255);	// Len, LSB first as per deflate spec
-			h[2] = (i->L / 256);
-			h[3] = ~(i->L & 255);	// Inverse of Len
-			h[4] = ~(i->L / 256);
-			*p = 0;	// filter 0 (NONE)
-			crc = writecrc(fh, h, 5, crc);
-			crc = writecrc(fh, p, i->L, crc);
-			adler = adlersum(p, i->L, adler);
-			p += i->L;
+		if (is_1bpp) {
+			int len = 0;
+			unsigned char *out = repack1bpp(i, &len);
+			writeUncompressed(fh, out, len, 1, &crc, &adler);
+			free(out);
+		} else {
+			unsigned int n = i->H;
+			while (n--) {
+				*p = 0;	// filter 0 (NONE)
+				writeUncompressed(fh, p, i->L, n == 0, &crc, &adler);
+				p += i->L;
+			}
 		}
 		v = htonl(adler);
 		crc = writecrc(fh, (void *)&v, 4, crc);
@@ -223,15 +273,19 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 	{			// IDAT
 		unsigned char *temp;
 		unsigned long n;
+		unsigned int len = i->L * i->H;
+		unsigned char *data = i->Image;
 		for (n = 0; n < i->H; n++)
 			i->Image[n * i->L] = 0;	// filter 0
-		n = i->H * i->L * 1001 / 1000 + 12;
+		if (is_1bpp) data = repack1bpp(i, &len);
+		n = len * 1001 / 1000 + 12;
 		temp = malloc(n);
-		if (compress2(temp, &n, i->Image, i->L * i->H, 9) != Z_OK)
+		if (compress2(temp, &n, data, len, 9) != Z_OK)
 			fprintf(stderr, "Deflate error\n");
 		else
 			writechunk(fh, "IDAT", temp, n);
 		free(temp);
+		if (is_1bpp) free(data);
 	}
 #endif
 	writechunk(fh, "IEND", 0, 0);	// IEND

@@ -6,6 +6,6 @@ includedir=@includedir@
 Name: libiec16022
 Description: ISO/IEC 2d barcodes (Data Matrix)
 Version: @VERSION@
-Libs: -L${libdir} -liec16022 -lz
+Libs: -L${libdir} -liec16022
 Cflags: -I${includedir}/iec16022
 

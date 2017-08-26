@@ -471,7 +471,7 @@ int main(int argc, const char *argv[])
 				for (x = 0; x < W; x++)
 					if (grid[y * W + x])
 						ImagePixel(i, x + 1, H - y) = 1;
-			ImageWritePNG(i, fileno(stdout), 0, -1, barcode);
+			ImageWritePNG(i, fileno(stdout), -1, -1, barcode);
 			ImageFree(i);
 		}
 		break;
