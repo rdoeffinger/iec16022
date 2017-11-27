@@ -57,4 +57,4 @@ pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA= libiec16022.pc
 
 iec16022.signed.exe: .libs/iec16022.exe
-	osslsigncode sign -ts http://timestamp.globalsign.com/scripts/timestamp.dll -certs $(SIGNKEY).crt -key $(SIGNKEY).key -in $^ -out $@
+	osslsigncode sign -ts http://sha256timestamp.ws.symantec.com/sha256/timestamp -certs $(SIGNKEY).crt -key $(SIGNKEY).key -h sha256 $(SIGNOPTS) -in $^ -out $@
