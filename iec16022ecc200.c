@@ -256,9 +256,9 @@ static char ecc200encode(unsigned char *t, int tl, const unsigned char *s, int s
 			{
 				char out[6];
 				int p = 0;
-				const char *e,
-				    *s2 = "!\"#$%&'()*+,-./:;<=>?@[\\]^_",
-				    *s3 = 0;
+				const char *e = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\r*>"; // for X12
+				const char *s2 = "!\"#$%&'()*+,-./:;<=>?@[\\]^_";
+				const char *s3 = 0;
 				if (newenc == 'c') {
 					e = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 					s3 = "`abcdefghijklmnopqrstuvwxyz{|}~\177";
@@ -267,8 +267,6 @@ static char ecc200encode(unsigned char *t, int tl, const unsigned char *s, int s
 					e = " 0123456789abcdefghijklmnopqrstuvwxyz";
 					s3 = "`ABCDEFGHIJKLMNOPQRSTUVWXYZ{|}~\177";
 				}
-				if (newenc == 'x')
-					e = " 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ\r*>";
 				do {
 					unsigned char c = s[sp++];
 					char *w;
