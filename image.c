@@ -167,6 +167,8 @@ static unsigned char *repack1bpp(const Image *i, int *packed_len)
 			if (--b == 0) { *tmp++ ^= mask; b = 8; }
 			*tmp = (*tmp << 1) | *p++;
 		}
+		// left-align pixels in *tmp
+		*tmp <<= --b;
 		*tmp++ ^= mask;
 	}
 	*packed_len = len;
