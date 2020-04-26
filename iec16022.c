@@ -45,6 +45,8 @@ static void *safemalloc(int n)
 	return p;
 }
 
+char *escape_eps_comment(char *barcode, int len);
+
 // hex dump - bottom left pixel first
 static void dumphex(const unsigned char *grid, int W, int H, unsigned char p)
 {
@@ -358,8 +360,9 @@ int main(int argc, const char *argv[])
 		       "%%%%DocumentData: Clean7Bit\n" "%%%%LanguageLevel: 1\n"
 		       "%%%%Pages: 1\n" "%%%%BoundingBox: 0 0 %d %d\n"
 		       "%%%%EndComments\n" "%%%%Page: 1 1\n"
-		       "%d %d 1[1 0 0 1 -1 -1]{<\n", barcode, W, H, W + 2,
-		       H + 2, W, H);
+		       "%d %d 1[1 0 0 1 -1 -1]{<\n",
+		       escape_eps_comment(barcode, barcodelen), 
+		       W, H, W + 2, H + 2, W, H);
 		dumphex(grid, W, H, 0xFF);
 		printf(">}image\n");
 		break;
@@ -394,7 +397,8 @@ int main(int argc, const char *argv[])
 				 def/rl/rlineto load def\n" "/l/lineto load def/cp/closepath load def/c{dup stringwidth \
 				 pop -2 div 0 rmoveto show}bind def\n" "gsave 72 25.4 div dup scale 0 0 m 67 0 rl 0 28 rl -67 0 rl \
 				 cp clip 1 setgray fill 0 setgray 0.5 0 translate 0.3 \
-				 setlinewidth\n" "32 32 1[2 0 0 2 0 -11]{<\n", barcode, W, H);
+				 setlinewidth\n" "32 32 1[2 0 0 2 0 -11]{<\n",
+				 escape_eps_comment(barcode, barcodelen), W, H);
 			dumphex(grid, W, H, 0xFF);
 			printf(">}image\n"
 			       "3.25/Helvetica-Bold f 8 25.3 m(\\243%d.%02d)c\n"
@@ -480,4 +484,46 @@ int main(int argc, const char *argv[])
 		break;
 	}
 	return 0;
+}
+
+/* Escape a string according to
+ *   Postscript Language Reference Manual 2nd edition (Adobe) 
+ *   Section 3.2.2 -- Comments
+ * 
+ * Every newline and form feed character is backslash--escaped.
+ * 
+ * barcode: string to escape
+ * len: string length
+ * returns: the escaped string
+ */
+char *escape_eps_comment(char *barcode, int len)
+{
+	char *esc_bc;
+	int esc_len = len;
+	int i, j;
+
+	for (i = 0; i < len; i++) {
+		if (barcode[i] == '\n' || barcode[i] == '\f') {
+			esc_len += 1;
+		}
+	}
+
+	esc_bc = malloc(sizeof(*esc_bc) * esc_len + 1);
+
+	for (i = 0, j = 0; i < len; i++, j++) {
+		if (barcode[i] == '\n') {
+			esc_bc[j] = '\\';
+			esc_bc[++j] = 'n';
+		}
+		else if (barcode[i] == '\f') {
+			esc_bc[j] = '\\';
+			esc_bc[++j] = 'f';
+		} else {
+			esc_bc[j] = barcode[i];
+		}
+	}
+
+	esc_bc[esc_len] = '\0';
+
+	return esc_bc;
 }
