@@ -1,9 +1,10 @@
-AC_INIT(iec16022, 0.3.0, Reimar.Doeffinger@gmx.de)
+AC_INIT([iec16022],[0.3.0],[Reimar.Doeffinger@gmx.de])
+AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-xz])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_MAINTAINER_MODE
 
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 
 dnl
@@ -36,26 +37,19 @@ dnl
 AC_PROG_CC
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
-AC_PROG_LIBTOOL
+LT_INIT
 
-dnl
-dnl Required headers
-dnl
-AC_HEADER_STDC
-
-dnl
-dnl Checks for typedefs, structures, and compiler characteristics.
-dnl
-AC_HEADER_TIME
-
-AC_CHECK_LIB([popt], [main], [ ],AC_MSG_ERROR([Missing library: popt not found.]))
+PKG_CHECK_MODULES([POPT], [popt], ,
+AC_CHECK_LIB([popt], [main], POPT_LIBS=-lpopt,AC_MSG_ERROR([Missing library: popt not found.]))
+)
 # zlib is rather useless for our purpose
 # AC_CHECK_LIB([z], [main],,AC_MSG_ERROR([Missing library: zlib not found.]))
 
 dnl Output the files
-AC_OUTPUT([
+AC_CONFIG_FILES([
 Makefile
 test/Makefile
 libiec16022.pc
 iec16022.1
 ])
+AC_OUTPUT

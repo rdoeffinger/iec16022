@@ -1,3 +1,4 @@
+ACLOCAL_AMFLAGS = -I m4
 AM_CFLAGS = -Bsymbolic -Wundef -Wall -Wno-switch -Wno-parentheses -Wpointer-arith -Wredundant-decls -Werror=format-security -Wwrite-strings -Wstrict-prototypes -Wmissing-prototypes -Wdisabled-optimization -Wno-pointer-sign -Wdeclaration-after-statement -Werror-implicit-function-declaration -std=c99 -D_POSIX_C_SOURCE=200112 -D_ISOC99_SOURCE -Wl,--as-needed -Wl,--no-undefined -fno-asynchronous-unwind-tables
 
 image.lo: AM_CFLAGS += -Wno-unused-result
@@ -24,9 +25,11 @@ man_MANS = iec16022.1
 iec16022_SOURCES =	\
 	iec16022.c
 
+iec16022_CPPFLAGS = $(POPT_CFLAGS)
+
 iec16022_LDADD =	\
 	libiec16022.la  \
-	-lpopt
+	$(POPT_LIBS)
 
 fuzzer_SOURCES = fuzzer.c
 fuzzer_LDADD = $(iec16022_LDADD)

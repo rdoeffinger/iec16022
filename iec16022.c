@@ -29,7 +29,6 @@
 #include <string.h>
 #include <time.h>
 #include <popt.h>
-#include <malloc.h>
 #include "image.h"
 #include "iec16022ecc200.h"
 #include "config.h"

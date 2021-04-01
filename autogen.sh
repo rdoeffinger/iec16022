@@ -1,8 +1,8 @@
 #!/bin/sh
 set -x
 
+libtoolize --force || glibtoolize --force
 aclocal
-libtoolize --force
 autoheader
 automake --add-missing
 autoconf configure.ac > configure
