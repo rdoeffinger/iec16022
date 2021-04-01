@@ -45,6 +45,10 @@ AC_SEARCH_LIBS([poptGetContext], [popt], POPT_LIBS=-lpopt,AC_MSG_ERROR([Missing 
 # zlib is rather useless for our purpose
 # AC_CHECK_LIB([z], [main],,AC_MSG_ERROR([Missing library: zlib not found.]))
 
+ac_orig_ldflags="$LDFLAGS"
+LDFLAGS="$LDFLAGS -Wl,--as-needed -Wl,--no-undefined"
+AC_LINK_IFELSE([AC_LANG_SOURCE([int main() { return 0; }])], [], [LDFLAGS="$ac_orig_ldflags"])
+
 dnl Output the files
 AC_CONFIG_FILES([
 Makefile
