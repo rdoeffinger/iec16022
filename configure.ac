@@ -40,7 +40,7 @@ AC_PROG_INSTALL
 LT_INIT
 
 PKG_CHECK_MODULES([POPT], [popt], ,
-AC_CHECK_LIB([popt], [main], POPT_LIBS=-lpopt,AC_MSG_ERROR([Missing library: popt not found.]))
+AC_SEARCH_LIBS([poptGetContext], [popt], POPT_LIBS=-lpopt,AC_MSG_ERROR([Missing library: popt not found.]))
 )
 # zlib is rather useless for our purpose
 # AC_CHECK_LIB([z], [main],,AC_MSG_ERROR([Missing library: zlib not found.]))
