@@ -288,6 +288,13 @@ int main(int argc, const char *argv[])
 		fprintf(stderr, "No barcode produced\n");
 		return 1;
 	}
+	// Sanitize bar code from all control characters as it is not
+	// only used for comment-like usage.
+	// Avoids issues like broken EPS files but also PNG comments
+	// some programs might have issues with.
+	for (char *c = barcode; *c; c++) {
+		if (*c < 32 || *c == 127) *c = ' ';
+	}
 	switch (tolower(*format)) {
 	case 'i':		// info
 		printf("Size    : %dx%d\n", W, H);
