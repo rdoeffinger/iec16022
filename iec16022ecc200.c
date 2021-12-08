@@ -245,8 +245,8 @@ static char ecc200encode(unsigned char *t, int tl, const unsigned char *s, int s
 	// do the encoding
 	while (sp < sl && tp < tl) {
 		char newenc = enc;	// suggest new encoding
-		if (tl - tp <= 1 && (enc == 'c' || enc == 't') || tl - tp <= 2
-		    && enc == 'x')
+		if (tl - tp <= 1 && (enc == 'c' || enc == 't' || enc == 'x') || tl - tp <= 2
+		    && enc == 'e')
 			enc = 'a';	// auto revert to ASCII
 		newenc = tolower(encoding[sp]);
 		switch (newenc) {	// encode character
