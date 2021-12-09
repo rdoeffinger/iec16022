@@ -1,3 +1,8 @@
+0.3.1
+	- Fixed an incorrect encoding issue
+
+2021-12-09  Reimar Döffinger <Reimar.Doeffinger@gmx.de>
+
 0.3.0
 	- Fixed incorrect open mode, leading to
 	  corrupted output files at least on Windows

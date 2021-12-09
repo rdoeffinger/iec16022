@@ -1,4 +1,4 @@
-AC_INIT([iec16022],[0.3.0],[Reimar.Doeffinger@gmx.de])
+AC_INIT([iec16022],[0.3.1],[Reimar.Doeffinger@gmx.de])
 AC_CONFIG_MACRO_DIRS([m4])
 AM_INIT_AUTOMAKE([subdir-objects no-dist-gzip dist-xz])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
