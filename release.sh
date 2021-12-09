@@ -1,5 +1,5 @@
 #!/bin/sh
-VER=$(grep AC_INIT configure.ac | sed -e 's/.*, \(.*\),.*/\1/')
+VER=$(grep AC_INIT configure.ac | sed -e 's/.*,\[\(.*\)\],.*/\1/')
 if ! grep -q "^$VER$" NEWS ; then
     echo "Please add NEWS entry for version $VER!"
     exit 1
