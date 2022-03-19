@@ -39,6 +39,8 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 LT_INIT
 
+# add fallback if pkg-config is not installed
+m4_ifdef([PKG_CHECK_MODULES],,[define(PKG_CHECK_MODULES, $4)])
 PKG_CHECK_MODULES([POPT], [popt], ,
 AC_SEARCH_LIBS([poptGetContext], [popt], POPT_LIBS=-lpopt,AC_MSG_ERROR([Missing library: popt not found.]))
 )
