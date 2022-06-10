@@ -1,6 +1,5 @@
 To install this software you need the following libraries installed:
 - libpopt
-- zlib
 
 You also need autotools (autoconf and automake).
 First, run './autogen.sh'.
