@@ -50,6 +50,17 @@ static int rlen;
 
 static int *log = NULL, *alog = NULL, *rspoly = NULL;
 
+// simple checked response calloc
+static void *safecalloc(size_t n, size_t s)
+{
+	void *p = calloc(n, s);
+	if (!p) {
+		perror("Calloc failed");
+		exit(EXIT_FAILURE);
+	}
+	return p;
+}
+
 // rs_init_gf(poly) initialises the parameters for the Galois Field.
 // The symbol size is determined from the highest bit set in poly
 // This implementation will support sizes up to 30 bits (though that
@@ -80,8 +91,8 @@ void rs_init_gf(int poly)
 
 	// Calculate the log/alog tables
 	logmod = (1 << m) - 1;
-	log = (int *)calloc(logmod + 1, sizeof(*log));
-	alog = (int *)calloc(logmod, sizeof(*alog));
+	log = (int *)safecalloc(logmod + 1, sizeof(*log));
+	alog = (int *)safecalloc(logmod, sizeof(*alog));
 
 	for (p = 1, v = 0; v < logmod; v++) {
 		alog[v] = p;
@@ -105,7 +116,7 @@ void rs_init_code(int nsym, int index)
 
 	if (rspoly)
 		free(rspoly);
-	rspoly = (int *)malloc(sizeof(int) * (nsym + 1));
+	rspoly = (int *)safecalloc(nsym + 1, sizeof(int));
 
 	rlen = nsym;
 

@@ -33,13 +33,13 @@
 #include "iec16022ecc200.h"
 #include "config.h"
 
- // simple checked response malloc
-static void *safemalloc(int n)
+// simple checked response malloc
+static void *safemalloc(size_t n)
 {
 	void *p = malloc(n);
 	if (!p) {
-		fprintf(stderr, "Malloc(%d) failed\n", n);
-		exit(1);
+		perror("Malloc failed");
+		exit(EXIT_FAILURE);
 	}
 	return p;
 }

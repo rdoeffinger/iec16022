@@ -41,6 +41,28 @@ static inline unsigned htonl(unsigned i)
 #include <zlib.h>
 #endif
 
+// simple checked response write
+static ssize_t safewrite(int f, const void *b, size_t c)
+{
+	ssize_t n = write(f, b, c);
+	if (n == -1) {
+ 		perror("Write failed");
+ 		exit(EXIT_FAILURE);
+	}
+        return n;
+}
+
+// simple checked response malloc
+static void *safemalloc(size_t n)
+{
+	void *p = malloc(n);
+	if (!p) {
+		perror("Malloc failed");
+		exit(EXIT_FAILURE);
+	}
+	return p;
+}
+
 Image *ImageNew(int w, int h, int c)
 {				// create a new blank image
 	Image *i = NULL;
@@ -101,7 +123,7 @@ static void make_crc_table(void)
 
 static unsigned int writecrc(int fh, const char *ptr, int len, unsigned int c)
 {
-	write(fh, ptr, len);
+	safewrite(fh, ptr, len);
 	while (len--)
 		c = crc_table[(c ^ *ptr++) & 0xff] ^ (c >> 8);
 	return c;
@@ -110,12 +132,12 @@ static unsigned int writecrc(int fh, const char *ptr, int len, unsigned int c)
 static void writechunk(int fh, const char *typ, const void *ptr, int len)
 {
 	unsigned int v = htonl(len), crc;
-	write(fh, &v, 4);
+	safewrite(fh, &v, 4);
 	crc = writecrc(fh, typ, 4, ~0);
 	if (len)
 		crc = writecrc(fh, ptr, len, crc);
 	v = htonl(~crc);
-	write(fh, &v, 4);
+	safewrite(fh, &v, 4);
 }
 
 #ifndef USEZLIB
@@ -155,7 +177,7 @@ static unsigned char *repack1bpp(const Image *i, int *packed_len)
 {
 	int len = (i->L + 8 + 6) / 8 * i->H;
 	unsigned char *p = i->Image;
-	unsigned char *out = calloc(len, 1);
+	unsigned char *out = safemalloc(len);
 	unsigned char *tmp = out;
 	unsigned int n = i->H;
 	unsigned char mask = i->Colour[0] == 0 ? 0 : 0xff;
@@ -187,7 +209,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 	is_1bpp &= (i->L + 8 + 6) / 8 * i->H <= 0xffff;
 #endif
 	make_crc_table();
-	write(fh, "\211PNG\r\n\032\n", 8);	// PNG header
+	safewrite(fh, "\211PNG\r\n\032\n", 8);	// PNG header
 	{			// IHDR
 		struct {
 			unsigned int width;
@@ -205,14 +227,14 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 	}
 	if (!is_1bpp) {			// PLTE
 		unsigned int v = htonl(i->C * 3), crc, n;
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 		crc = writecrc(fh, "PLTE", 4, ~0);
 		for (n = 0; n < i->C; n++) {
 			v = htonl(i->Colour[n] << 8);
 			crc = writecrc(fh, (void *)&v, 3, crc);
 		}
 		v = htonl(~crc);
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 	}
 	if (back >= 0) {	// bKGD
 		unsigned char b = back;
@@ -221,12 +243,12 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 	if (*comment) {		// tEXt
 		static const char c[] = "Comment";
 		unsigned int v = htonl(strlen(c) + strlen(comment) + 1), crc;
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 		crc = writecrc(fh, "tEXt", 4, ~0);
 		crc = writecrc(fh, c, strlen(c) + 1, crc);
 		crc = writecrc(fh, comment, strlen(comment), crc);
 		v = htonl(~crc);
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 	}
 	{			// tRNS
 		int has_alpha = 0;
@@ -250,7 +272,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 		    crc, adler = 1;
 		unsigned char *p = i->Image;
 		if (is_1bpp) v = htonl(5 + (i->L + 8 + 6) / 8 * i->H + 6);
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 		crc = writecrc(fh, "IDAT", 4, ~0);
 		crc = writecrc(fh, "\170\001", 2, crc);	// zlib header for deflate
 		if (is_1bpp) {
@@ -269,7 +291,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 		v = htonl(adler);
 		crc = writecrc(fh, (void *)&v, 4, crc);
 		v = htonl(~crc);
-		write(fh, &v, 4);
+		safewrite(fh, &v, 4);
 	}
 #else
 	{			// IDAT
@@ -281,7 +303,7 @@ void ImageWritePNG(Image * i, int fh, int back, int trans, const char *comment)
 			i->Image[n * i->L] = 0;	// filter 0
 		if (is_1bpp) data = repack1bpp(i, &len);
 		n = len * 1001 / 1000 + 12;
-		temp = malloc(n);
+		temp = safemalloc(n);
 		if (compress2(temp, &n, data, len, 9) != Z_OK)
 			fprintf(stderr, "Deflate error\n");
 		else
