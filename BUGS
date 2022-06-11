@@ -1,9 +1,3 @@
-iec16022 -f i -c aaaaabbbbbccccc
-Barcode too long for 32x8
-No barcode produced
-
-We should find a suit barcode and not error here.
-
 Produces wrong barcode for strings with a underscore at >4th position in the
 string. (Not able to reproduce until now)
-
+May be fixed?
