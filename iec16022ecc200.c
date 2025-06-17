@@ -221,6 +221,24 @@ static void ecc200(unsigned char *binary, int bytes, int datablock, int rsblock)
 	}
 }
 
+static int is_function_code(unsigned char c, int flags)
+{
+	if (!(flags & IEC16022_FLAG_GS1)) return 0;
+	switch (c)
+	{
+	case 232: // FNC1
+	case 233: // Structured Append
+	case 234: // Reader Programming
+	case 236: // 05 Macro
+	case 237: // 06 Macro
+	case 241: // ECI character
+		return 1;
+	default:
+		break;
+	}
+	return 0;
+}
+
 /*
  * perform encoding for ecc200, source s len sl, to target t len tl, using
  * optional encoding control string e return 1 if OK, 0 if failed. Does all
@@ -404,6 +422,8 @@ static char ecc200encode(unsigned char *t, int tl, const unsigned char *s, int s
 				t[tp++] =
 				    (s[sp] - '0') * 10 + s[sp + 1] - '0' + 130;
 				sp += 2;
+			} else if (is_function_code(s[sp], flags)) {
+				t[tp++] = s[sp++];
 			} else if (s[sp] > 127) {
 				t[tp++] = 235;
 				t[tp++] = s[sp++] - 127;
@@ -503,7 +523,7 @@ static const unsigned char switchcost[E_MAX][E_MAX] = {
  * otherwise free the result and try again with exact=0
  */
 
-static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
+static char *encmake(int l, const unsigned char *s, int *lenp, char exact, int flags)
 {
 	char *encoding = 0;
 	int p = l;
@@ -534,7 +554,7 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 		sl = tl = 1;
 		if (isdigit(s[p]) && p + 1 < l && isdigit(s[p + 1]))
 			sl = 2;	// double digit
-		else if (s[p] & 0x80)
+		else if (s[p] & 0x80 && !is_function_code(s[p], flags))
 			tl = 2;	// high shifted
 		bl = 0;
 		if (p + sl < l)
@@ -549,6 +569,10 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 		enc[p][E_ASCII].s = sl;
 		if (bl && b == E_ASCII)
 			enc[p][b].s += enc[p + sl][b].s;
+		if (is_function_code(s[p], flags)) {
+			// no other encodings are possible
+			continue;
+		}
 		// C40
 		sub = tl = sl = 0;
 		do {
@@ -571,7 +595,7 @@ static char *encmake(int l, const unsigned char *s, int *lenp, char exact)
 			sub = 0;
 			tl += 2;
 		}
-		if (!sub) {	// can encode C40
+		if (!sub && sl) {	// can encode C40
 			bl = 0;
 			if (p + sl < l) {
 				for (e = 0; e < E_MAX; e++)
@@ -890,10 +914,10 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 		}
 		if (!encoding) {
 			int len;
-			char *e = encmake(barcodelen, barcode, &len, 1);
+			char *e = encmake(barcodelen, barcode, &len, 1, flags);
 			if (e && len != matrix->bytes) {	// try not an exact fit
 				free(e);
-				e = encmake(barcodelen, barcode, &len, 0);
+				e = encmake(barcodelen, barcode, &len, 0, flags);
 				if (len > matrix->bytes) {
 					fprintf(stderr,
 						"Cannot make barcode fit %dx%d\n",
@@ -906,7 +930,7 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 	} else {
 		// find a suitable encoding
 		if (encoding == NULL)
-			encoding = encmake(barcodelen, barcode, NULL, 1);
+			encoding = encmake(barcodelen, barcode, NULL, 1, flags);
 
 		if (encoding) {	// find one that fits chosen encoding
 			for (matrix = ecc200matrix; matrix->W; matrix++)
@@ -917,12 +941,12 @@ unsigned char *iec16022ecc200f(int *Wptr, int *Hptr, char **encodingptr,
 		} else {
 			int len;
 			char *e;
-			e = encmake(barcodelen, barcode, &len, 1);
+			e = encmake(barcodelen, barcode, &len, 1, flags);
 			for (matrix = ecc200matrix;
 			     matrix->W && matrix->bytes != len; matrix++) ;
 			if (e && !matrix->W) {	// try for non exact fit
 				free(e);
-				e = encmake(barcodelen, barcode, &len, 0);
+				e = encmake(barcodelen, barcode, &len, 0, flags);
 				for (matrix = ecc200matrix;
 				     matrix->W && matrix->bytes < len;
 				     matrix++) ;
