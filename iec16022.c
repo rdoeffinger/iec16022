@@ -117,7 +117,7 @@ int main(int argc, const char *argv[])
 		{
 		 "format", 'f', POPT_ARGFLAG_SHOW_DEFAULT | POPT_ARG_STRING,
 		 &format, 0,
-		 "Output format", "Text/UTF-8/EPS/PNG/Bin/Hex/Stamp"},
+		 "Output format", "Text/Ansi/CP437/UTF-8/EPS/PNG/Bin/Hex/Stamp"},
 		{"gs1", 0, POPT_ARG_NONE, &gs1, 0, "Enable GS1 mode, start with FNC1", 0},
 		POPT_AUTOHELP {
 			       NULL, 0, 0, NULL, 0, NULL, NULL}
@@ -326,7 +326,63 @@ int main(int argc, const char *argv[])
 			}
 		}
 		break;
-	case 't':		// text
+	case 'a':		// text, ansi
+		{
+			printf("\n");
+			int y;
+			for (y = H - 1; y >= 0; y--) {
+				printf("   "); // left border
+				int x;
+				int inv = 0;
+				for (x = 0; x < W; x++){
+					if ( grid[W * y + x] ){
+						if ( !inv ){
+							inv = 1;
+							printf("\e[7m ");
+						} else {
+							printf (" ");
+						}
+					} else {
+						if ( inv ){
+							inv = 0;
+							printf("\e[0m ");
+						} else {
+							printf (" ");
+						}
+					}
+				}
+				printf("\e[0m\n");
+			}
+			printf("\n"); // bottom border
+		}
+		break;
+	case 'c':		// text, cp437
+		{
+			printf("\n");
+			int y;
+			for (y = H - 1; y >= 1; y-=2) {
+				printf("   "); // left border
+				int x;
+				for (x = 0; x < W; x++){
+					if ( grid[W * y + x] ){
+						if ( grid[W * (y-1) + x] )
+							printf("\xdb");
+						else 
+							printf("\xdf");
+					} else {
+						if ( grid[W * (y-1) + x] )
+							printf("\xdc");
+						else 
+							printf(" ");
+					}
+				}
+				printf("\n");
+			}
+			printf("\n"); // bottom border
+		}
+		break;
+
+	case 't':
 		{
 			int y;
 			for (y = H - 1; y >= 0; y--) {
